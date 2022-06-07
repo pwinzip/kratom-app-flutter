@@ -197,7 +197,7 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(item['remain'].toString() + ' ต้น'),
+                  Text("คงอยู่ " + item['remain'].toString() + ' ต้น'),
                 ],
               ),
             ),

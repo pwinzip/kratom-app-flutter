@@ -48,7 +48,8 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.all(24),
               child: Form(
                 key: _formKey,
-                child: ListView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     logo(),
                     errorText != null
@@ -244,7 +245,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget notifyText() {
     return Container(
       margin: const EdgeInsets.all(8),
-      width: 250,
+      width: double.infinity,
       child: Text(
         '*** สมาคมพืชกระท่อมแห่งประเทศไทยเป็นเพียงตัวกลางเก็บรวบรวมข้อมูลความต้องการของตลาดเท่านั้น ***',
         softWrap: true,

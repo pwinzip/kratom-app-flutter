@@ -29,8 +29,8 @@ List<NavigationModel> enterpriseNavigationItems = [
 
 List<NavigationModel> adminNavigationItems = [
   NavigationModel(title: 'หน้าแรก', icon: Icons.home),
-  NavigationModel(title: 'จ้ดการกลุ่ม', icon: Icons.groups),
-  NavigationModel(title: 'จัดการเกษตรกร', icon: Icons.person),
+  NavigationModel(title: 'จ้ดการกลุ่ม', icon: Icons.add_business),
+  NavigationModel(title: 'จัดการเกษตรกร', icon: Icons.person_add_alt_sharp),
   // NavigationModel(title: 'รายการแจ้งขาย', icon: Icons.monetization_on_outlined),
   // NavigationModel(title: 'รายการแจ้งซื้อ', icon: Icons.shopping_cart_checkout),
 ];

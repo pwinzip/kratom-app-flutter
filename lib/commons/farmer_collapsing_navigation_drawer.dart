@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kratomapp/models/navigation_model.dart';
-import 'package:kratomapp/screens/farmer/farmer_history_page.dart';
+import 'package:kratomapp/screens/farmer/farmer_plant_page.dart';
 import 'package:kratomapp/screens/farmer/farmer_main_page.dart';
 
 import '../theme.dart';

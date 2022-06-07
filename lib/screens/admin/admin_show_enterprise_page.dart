@@ -10,6 +10,7 @@ import '../../commons/card_info.dart';
 import '../../services/admin_service.dart';
 import '../../theme.dart';
 import 'admin_edit_enterprise_page.dart';
+import 'admin_show_enterprise_sale_page.dart';
 import 'admin_show_member_page.dart';
 
 class AdminShowEnterprisePage extends StatefulWidget {
@@ -76,8 +77,8 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
 
   @override
   void initState() {
-    super.initState();
     getSharedPreferences();
+    super.initState();
   }
 
   @override
@@ -456,6 +457,19 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ListTile(
+                      leading: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AdminEditEnterprisePage(entid: item['id']),
+                              )).then((value) {
+                            setState(() {});
+                          });
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
                       title: Text(item['enterprise_name']),
                       subtitle: Text(item['name']),
                       trailing: Row(
@@ -472,10 +486,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
                                 setState(() {});
                               });
                             },
-                            icon: const Icon(
-                              Icons.remove_red_eye_rounded,
-                              color: Colors.lightBlue,
-                            ),
+                            icon: const Icon(Icons.group),
                           ),
                           IconButton(
                             onPressed: () {
@@ -483,16 +494,13 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        AdminEditEnterprisePage(
+                                        AdminShowEnterpriseSalePage(
                                             entid: item['id']),
                                   )).then((value) {
                                 setState(() {});
                               });
                             },
-                            icon: const Icon(
-                              Icons.edit,
-                              color: Colors.lightGreen,
-                            ),
+                            icon: const Icon(Icons.shopping_cart_outlined),
                           ),
                         ],
                       ),

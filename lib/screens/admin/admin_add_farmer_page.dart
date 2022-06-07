@@ -111,7 +111,11 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.chevron_left)),
+                    icon: const Icon(
+                      Icons.chevron_left,
+                      size: 28,
+                      color: Colors.white,
+                    )),
                 const SizedBox(width: 10),
                 const Text(
                   "เพิ่ม",

@@ -95,23 +95,17 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
           Padding(
             padding: const EdgeInsets.only(left: 40),
             child: Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.chevron_left)),
-                const SizedBox(width: 10),
-                const Text(
-                  "หน้าหลัก",
+              children: const [
+                Text(
+                  "ข้อมูล",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 25),
                 ),
-                const SizedBox(width: 10),
-                const Text(
-                  "ผู้ดูแลระบบ",
+                SizedBox(width: 10),
+                Text(
+                  "เกษตรกร",
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ],
@@ -231,7 +225,7 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(item['remain'].toString() + " ต้น"),
+                          Text("คงอยู่ " + item['remain'].toString() + " ต้น"),
                           IconButton(
                               onPressed: () {},
                               icon: const Icon(Icons.remove_red_eye_outlined)),
