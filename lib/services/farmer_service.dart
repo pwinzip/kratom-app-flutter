@@ -18,7 +18,7 @@ Future<http.Response> getPlantAmount(farmerid, String token) async {
   return response;
 }
 
-Future<http.Response> getAllPlants(farmerid, String token) async {
+Future<http.Response> getAllPlants(farmerid, String? token) async {
   var url = Uri.parse(apiURL + 'plantsfarmer/$farmerid');
 
   var response = await http.get(url, headers: {
@@ -29,7 +29,7 @@ Future<http.Response> getAllPlants(farmerid, String token) async {
   return response;
 }
 
-Future<http.Response> saveFarmerPlant(json, farmerid, String token) async {
+Future<http.Response> saveFarmerPlant(json, farmerid, String? token) async {
   var url = Uri.parse(apiURL + 'newplant/$farmerid');
 
   var response = await http.post(url, body: json, headers: {

@@ -8,9 +8,9 @@ import 'package:intl/intl.dart';
 
 import '../../commons/card_info.dart';
 import '../../commons/farmer_collapsing_navigation_drawer.dart';
-import '../../models/navigation_model.dart';
 import '../../services/farmer_service.dart';
 import '../../theme.dart';
+import 'farmer_plant_page.dart';
 
 class FarmerMainPage extends StatefulWidget {
   const FarmerMainPage({Key? key}) : super(key: key);
@@ -46,6 +46,10 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
       _agentname = prefs.getString("agentname")!;
       _token = prefs.getString("token")!;
     });
+    await getPlants();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> getPlants() async {
@@ -53,15 +57,13 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
     setState(() {
       _remainPlants = jsonDecode(response.body)['remain'].toString();
       _addonPlants = jsonDecode(response.body)['addon'].toString();
-      isLoading = false;
     });
   }
 
   @override
   void initState() {
-    super.initState();
     getSharedPreferences();
-    getPlants();
+    super.initState();
   }
 
   @override
@@ -157,8 +159,7 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
-                    'บันทึกวันที่ ' +
-                        DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                    'บันทึกวันที่ ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w600),
                   ),
@@ -398,7 +399,27 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
         width: 250,
         height: 50,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () async {
+            if (_farmerFormKey.currentState!.validate()) {
+              var json = jsonEncode({
+                "remain": int.parse(_remainController.text),
+                "addonAmount": int.parse(_addonController.text),
+                "addonSpecies": _speciesController.text,
+                "expectedDate": _harvestDateController.text,
+                "expectedAmount": double.parse(_harvestController.text),
+              });
+
+              var response = await saveFarmerPlant(json, _farmerid, _token);
+              if (response.statusCode == 200) {
+                print("add new plant");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FarmerPlantPage(),
+                    ));
+              }
+            }
+          },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(
               const Color(0xFF21BFBD),

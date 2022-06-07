@@ -87,7 +87,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
       body: SafeArea(
         child: Stack(
           children: [
-            adminShowEnterpriseConter(),
+            adminShowEnterpriseContent(),
             AdminCollapsingNavigationDrawer(name: username!, menuIndex: 1),
           ],
         ),
@@ -95,7 +95,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
     );
   }
 
-  Widget adminShowEnterpriseConter() {
+  Widget adminShowEnterpriseContent() {
     return Container(
       margin: const EdgeInsets.only(left: 70),
       color: const Color(0xFF21BFBD),
@@ -500,7 +500,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
                                 setState(() {});
                               });
                             },
-                            icon: const Icon(Icons.shopping_cart_outlined),
+                            icon: const Icon(Icons.shopping_cart_checkout),
                           ),
                         ],
                       ),

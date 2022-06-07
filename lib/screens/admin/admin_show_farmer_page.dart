@@ -9,6 +9,7 @@ import '../../commons/card_info.dart';
 import '../../services/admin_service.dart';
 import 'admin_add_farmer_page.dart';
 import 'admin_edit_farmer_page.dart';
+import 'admin_show_farmer_plant_page.dart';
 
 class AdminShowFarmerPage extends StatefulWidget {
   const AdminShowFarmerPage({Key? key}) : super(key: key);
@@ -220,25 +221,33 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: ListTile(
+                      leading: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdminEditFarmerPage(
+                                      farmerid: item['farmer_id']),
+                                )).then((value) => setState(() {}));
+                          },
+                          icon: const Icon(Icons.edit)),
                       title: Text(item['name']),
                       subtitle: Text(item['ent_name']),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text("คงอยู่ " + item['remain'].toString() + " ต้น"),
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.remove_red_eye_outlined)),
+                          Text("คงอยู่ ${item['remain']} ต้น"),
                           IconButton(
                               onPressed: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => AdminEditFarmerPage(
-                                          farmerid: item['farmer_id']),
-                                    )).then((value) => setState(() {}));
+                                      builder: (context) =>
+                                          AdminShowFarmerPlantPage(
+                                              farmerid: item['farmer_id']),
+                                    ));
                               },
-                              icon: const Icon(Icons.edit)),
+                              icon: const Icon(Icons.info)),
                         ],
                       ),
                     ),

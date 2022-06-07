@@ -34,7 +34,7 @@ Future<http.Response> editEnterprise(json, entid, String? token) async {
   return response;
 }
 
-Future<http.Response> getSales(entid, String token) async {
+Future<http.Response> getSales(entid, String? token) async {
   var url = Uri.parse(apiURL + 'salesenterprise/$entid');
 
   var response = await http.get(url, headers: {
