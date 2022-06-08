@@ -44,7 +44,7 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
   }
 
   Future<void> getEnterpriseData() async {
-    var response = await getEnterprise(widget.entid, token);
+    var response = await getEnterpriseMembers(widget.entid, token);
     var jsonEnterprise = jsonDecode(response.body)['enterprise'];
     var jsonAgent = jsonDecode(response.body)['agent'];
     print(response.body);
@@ -210,6 +210,10 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
                                     var response = await editEnterprise(
                                         json, widget.entid, token);
                                     if (response.statusCode == 200) {
+                                      await Future.delayed(
+                                          const Duration(seconds: 1));
+
+                                      if (!mounted) return;
                                       Navigator.pop(context);
                                     }
                                   }

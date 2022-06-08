@@ -4,26 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../commons/admin_collapsing_navigation_drawer.dart';
 import '../../commons/card_info.dart';
+import '../../commons/enterprise_collapsing_navigation_drawer.dart';
 import '../../services/enterprise_service.dart';
 
-class AdminShowMemberPage extends StatefulWidget {
-  final int? entid;
-
-  const AdminShowMemberPage({Key? key, this.entid}) : super(key: key);
+class EnterpriseMemberPage extends StatefulWidget {
+  const EnterpriseMemberPage({Key? key}) : super(key: key);
 
   @override
-  State<AdminShowMemberPage> createState() => _AdminShowMemberPageState();
+  State<EnterpriseMemberPage> createState() => _EnterpriseMemberPageState();
 }
 
-class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
+class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
   String? username;
+  int? enterpriseid;
+  String? enterprisename;
   String? token;
 
+  String _registNo = "";
   String _numMember = "";
   String _numPlant = "";
-  Map<String, dynamic> _enterprise = {};
   List<dynamic> _members = [];
 
   bool isLoading = true;
@@ -31,23 +31,35 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
   Future<void> getSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      username = prefs.getString("username");
-      token = prefs.getString("token");
+      username = prefs.getString("username")!;
+      enterpriseid = prefs.getInt("enterpriseid")!;
+      enterprisename = prefs.getString("username")!;
+      token = prefs.getString("token")!;
     });
-    await getMembers();
+    await getEnterpriseInfo();
     setState(() {
       isLoading = false;
     });
   }
 
-  Future<void> getMembers() async {
-    var response = await getEnterpriseMembers(widget.entid, token);
+  Future<void> getEnterpriseInfo() async {
+    var response = await getEnterpriseMembers(enterpriseid, token);
     setState(() {
-      _enterprise = jsonDecode(response.body)['enterprise'];
+      _registNo = jsonDecode(response.body)['enterprise']['regist_no'];
       _members = jsonDecode(response.body)['members'];
       _numMember = jsonDecode(response.body)['memberAmount'].toString();
       _numPlant = jsonDecode(response.body)['plantAmount'].toString();
     });
+  }
+
+  Future<String?> getMembers() async {
+    var response = await getSales(enterpriseid, token);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -62,15 +74,15 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            adminMemberContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 1),
+            enterpriseMemberContent(),
+            EnterpriseCollapsingNavigationDrawer(name: username!, menuIndex: 1),
           ],
         ),
       ),
     );
   }
 
-  Widget adminMemberContent() {
+  Widget enterpriseMemberContent() {
     return Container(
       margin: const EdgeInsets.only(left: 70),
       color: const Color(0xFF21BFBD),
@@ -80,27 +92,17 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
           Padding(
             padding: const EdgeInsets.only(left: 40),
             child: Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.chevron_left,
-                      color: Colors.white,
-                      size: 28,
-                    )),
-                const SizedBox(width: 10),
-                const Text(
-                  "จัดการ",
+              children: const [
+                Text(
+                  "ข้อมูล",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 25),
                 ),
-                const SizedBox(width: 10),
-                const Text(
-                  "กลุ่มวิสาหกิจ",
+                SizedBox(width: 10),
+                Text(
+                  "แจ้งความต้องการขาย",
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ],
@@ -122,12 +124,21 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
                     primary: false,
                     padding: const EdgeInsets.only(left: 25, right: 20),
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(top: 40),
-                        child: Text(
-                          'ข้อมูลกลุ่มวิสาหกิจ',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 40),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              _registNo,
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              enterprisename!,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -155,22 +166,6 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
                         ),
                       ),
                       const SizedBox(height: 15),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Text(
-                          _enterprise['enterprise_name'],
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text(
-                          "ตัวแทนกลุ่ม  ${_enterprise['users']['name']}",
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w300),
-                        ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: showMemberLists(),

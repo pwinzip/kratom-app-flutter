@@ -6,22 +6,22 @@ import 'package:kratomapp/screens/farmer/farmer_main_page.dart';
 import '../theme.dart';
 import 'collapsing_listtile.dart';
 
-class FarmerCollapsingNavigationDrawer extends StatefulWidget {
+class EnterpriseCollapsingNavigationDrawer extends StatefulWidget {
   final String name;
   final int menuIndex;
-  const FarmerCollapsingNavigationDrawer({
+  const EnterpriseCollapsingNavigationDrawer({
     Key? key,
     required this.name,
     required this.menuIndex,
   }) : super(key: key);
 
   @override
-  State<FarmerCollapsingNavigationDrawer> createState() =>
-      _FarmerCollapsingNavigationDrawerState();
+  State<EnterpriseCollapsingNavigationDrawer> createState() =>
+      _EnterpriseCollapsingNavigationDrawerState();
 }
 
-class _FarmerCollapsingNavigationDrawerState
-    extends State<FarmerCollapsingNavigationDrawer>
+class _EnterpriseCollapsingNavigationDrawerState
+    extends State<EnterpriseCollapsingNavigationDrawer>
     with SingleTickerProviderStateMixin {
   double maxWidth = 250;
   double minWidth = 70;
@@ -71,7 +71,7 @@ class _FarmerCollapsingNavigationDrawerState
                 separatorBuilder: (context, index) {
                   return const Divider(height: 12);
                 },
-                itemCount: farmerNavigationItems.length,
+                itemCount: enterpriseNavigationItems.length,
                 itemBuilder: (context, counter) {
                   return CollapsingListTile(
                     onTap: () {
@@ -89,8 +89,8 @@ class _FarmerCollapsingNavigationDrawerState
                       }
                     },
                     isSelected: currentSelectedIndex == counter,
-                    title: farmerNavigationItems[counter].title,
-                    icon: farmerNavigationItems[counter].icon,
+                    title: enterpriseNavigationItems[counter].title,
+                    icon: enterpriseNavigationItems[counter].icon,
                     animationController: _animationController,
                   );
                 },

@@ -13,15 +13,15 @@ Future<http.Response> getEnterpriseMembers(entid, String? token) async {
   return response;
 }
 
-Future<http.Response> getEnterprise(entid, String? token) async {
-  var url = Uri.parse(apiURL + 'enterprises/$entid');
+// Future<http.Response> getEnterprise(entid, String? token) async {
+//   var url = Uri.parse(apiURL + 'enterprises/$entid');
 
-  var response = await http.get(url, headers: {
-    HttpHeaders.contentTypeHeader: 'application/json',
-    HttpHeaders.authorizationHeader: 'Bearer $token',
-  });
-  return response;
-}
+//   var response = await http.get(url, headers: {
+//     HttpHeaders.contentTypeHeader: 'application/json',
+//     HttpHeaders.authorizationHeader: 'Bearer $token',
+//   });
+//   return response;
+// }
 
 //update Enterprise
 Future<http.Response> editEnterprise(json, entid, String? token) async {
@@ -44,7 +44,7 @@ Future<http.Response> getSales(entid, String? token) async {
   return response;
 }
 
-Future<http.Response> addSale(json, entid, String token) async {
+Future<http.Response> addSale(json, entid, String? token) async {
   var url = Uri.parse(apiURL + 'newsale/$entid');
 
   var response = await http.post(url, body: json, headers: {

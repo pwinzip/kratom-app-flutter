@@ -218,6 +218,10 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
                                         var response =
                                             await addFarmer(json, token);
                                         if (response.statusCode == 200) {
+                                          await Future.delayed(
+                                              const Duration(seconds: 1));
+
+                                          if (!mounted) return;
                                           Navigator.pop(context);
                                         }
                                       }

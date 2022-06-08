@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kratomapp/screens/admin/admin_main_page.dart';
-import 'package:kratomapp/screens/farmer/farmer_main_page.dart';
 import 'package:kratomapp/screens/login_page.dart';
 
 void main() {

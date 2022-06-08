@@ -131,6 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   var entidJson = jsonDecode(response.body)['enterprise']['id'];
                   var entnameJson = jsonDecode(response.body)['enterprise']
                       ['enterprise_name'];
+                  
                   await prefs.setInt('enterpriseid', entidJson);
                   await prefs.setString('enterprisename', entnameJson);
 

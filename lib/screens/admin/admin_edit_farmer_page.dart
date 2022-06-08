@@ -278,6 +278,10 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
                                         print(response.statusCode);
                                         print(response.body);
                                         if (response.statusCode == 200) {
+                                          await Future.delayed(
+                                              const Duration(seconds: 1));
+
+                                          if (!mounted) return;
                                           Navigator.pop(context);
                                         }
                                       }

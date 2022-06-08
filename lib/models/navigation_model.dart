@@ -21,10 +21,11 @@ List<NavigationModel> farmerNavigationItems = [
 
 List<NavigationModel> enterpriseNavigationItems = [
   NavigationModel(title: 'หน้าแรก', icon: Icons.home),
-  NavigationModel(
-      title: 'แจ้งความต้องการขาย', icon: Icons.shopping_cart_outlined),
-  NavigationModel(title: 'ประวัติการแจ้งขาย', icon: Icons.history_outlined),
-  NavigationModel(title: 'ข้อมูลส่วนตัว', icon: Icons.settings),
+  NavigationModel(title: 'สมาชิก', icon: Icons.group),
+  // NavigationModel(
+  //     title: 'แจ้งความต้องการขาย', icon: Icons.shopping_cart_outlined),
+  // NavigationModel(title: 'ประวัติการแจ้งขาย', icon: Icons.history_outlined),
+  // NavigationModel(title: 'ข้อมูลส่วนตัว', icon: Icons.settings),
 ];
 
 List<NavigationModel> adminNavigationItems = [
