@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-TextStyle listTileDefaultTextStyle = const TextStyle(
-    color: Colors.white70, fontSize: 20, fontWeight: FontWeight.w600);
-TextStyle listTileSelectedTextStyle = const TextStyle(
-    color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600);
+// TextStyle listTileDefaultTextStyle = const TextStyle(
+//     color: Colors.white70, fontSize: 18, fontWeight: FontWeight.w600);
+// TextStyle listTileSelectedTextStyle = const TextStyle(
+//     color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600);
 TextStyle errorInputTextStyle =
     const TextStyle(color: Colors.red, fontSize: 16);
 TextStyle labelInputStyle =

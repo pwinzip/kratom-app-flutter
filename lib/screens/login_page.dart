@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kratomapp/screens/admin/admin_main_page.dart';
 import 'package:kratomapp/screens/enterprise/enterprise_main_page.dart';
 import 'package:kratomapp/screens/farmer/farmer_main_page.dart';
-import 'package:kratomapp/screens/sidebar_test.dart';
 import 'package:kratomapp/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -126,20 +125,44 @@ class _LoginPageState extends State<LoginPage> {
                   await prefs.setString('agentname', agentnameJson);
 
                   // go to Farmer Page
-                  goToFarmerPage();
+                  await Future.delayed(const Duration(seconds: 1));
+
+                  if (!mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FarmerMainPage(),
+                    ),
+                  );
                 } else if (roleJson == 1) {
                   var entidJson = jsonDecode(response.body)['enterprise']['id'];
                   var entnameJson = jsonDecode(response.body)['enterprise']
                       ['enterprise_name'];
-                  
+
                   await prefs.setInt('enterpriseid', entidJson);
                   await prefs.setString('enterprisename', entnameJson);
 
                   // go to Enterprise Page
-                  goToEnterprisePage();
+                  await Future.delayed(const Duration(seconds: 1));
+
+                  if (!mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EnterpriseMainPage(),
+                    ),
+                  );
                 } else if (roleJson == 0) {
                   // go to Admin Page
-                  goToAdminPage();
+                  await Future.delayed(const Duration(seconds: 1));
+
+                  if (!mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AdminMainPage(),
+                    ),
+                  );
                 }
               } else {
                 // Toast
@@ -255,43 +278,6 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 12,
         ),
         textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  void goToFarmerPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const FarmerMainPage(),
-      ),
-    );
-  }
-
-  void goToEnterprisePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const EnterpriseMainPage(),
-      ),
-    );
-  }
-
-  void goToAdminPage() {
-    print("Go to Admin");
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AdminMainPage(),
-      ),
-    );
-  }
-
-  void goToSideBar() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SideBarTest(),
       ),
     );
   }

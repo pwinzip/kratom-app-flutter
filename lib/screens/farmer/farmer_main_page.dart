@@ -73,7 +73,11 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
         child: Stack(
           children: [
             mainContent(),
-            FarmerCollapsingNavigationDrawer(name: _username!, menuIndex: 0),
+            FarmerCollapsingNavigationDrawer(
+              name: _username!,
+              menuIndex: 0,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -93,6 +97,7 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
               children: const [
                 Text(
                   "บันทึกการปลูก",
+                  softWrap: true,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -101,6 +106,7 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
                 SizedBox(width: 10),
                 Text(
                   "พืชกระท่อม",
+                  softWrap: true,
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ],
@@ -159,7 +165,7 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
-                    'บันทึกวันที่ ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+                    'บันทึกข้อมูลวันที่ ${DateFormat('dd MMMM yyyy', 'th').format(DateTime.now())}',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w600),
                   ),
@@ -364,8 +370,8 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
 
   Widget datePicker() {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.8,
-      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.height * 0.5,
+      width: MediaQuery.of(context).size.width * 0.75,
       child: SfDateRangePicker(
         showNavigationArrow: true,
         onSubmit: (value) {

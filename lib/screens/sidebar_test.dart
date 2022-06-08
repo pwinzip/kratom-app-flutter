@@ -30,9 +30,10 @@ class _SideBarTestState extends State<SideBarTest> {
           children: [
             firstPage(),
             // testPage(),
-            FarmerCollapsingNavigationDrawer(
+            const FarmerCollapsingNavigationDrawer(
               name: "ณภัทร",
               menuIndex: 0,
+              maxWidth: 250,
             ),
           ],
         ),

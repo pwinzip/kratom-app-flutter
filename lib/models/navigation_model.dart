@@ -8,14 +8,8 @@ class NavigationModel {
 }
 
 List<NavigationModel> farmerNavigationItems = [
-  NavigationModel(
-    title: 'บันทึกการปลูก',
-    icon: Icons.cloud_download_outlined,
-  ),
-  NavigationModel(
-    title: 'ประวัติการบันทึก',
-    icon: Icons.history_outlined,
-  ),
+  NavigationModel(title: 'บันทึกการปลูก', icon: Icons.home),
+  NavigationModel(title: 'ประวัติการบันทึกการปลูก', icon: Icons.grass),
   // NavigationModel(title: 'ข้อมูลส่วนตัว', icon: Icons.settings),
 ];
 

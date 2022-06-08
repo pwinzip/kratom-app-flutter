@@ -9,10 +9,12 @@ import 'collapsing_listtile.dart';
 class FarmerCollapsingNavigationDrawer extends StatefulWidget {
   final String name;
   final int menuIndex;
+  final double maxWidth;
   const FarmerCollapsingNavigationDrawer({
     Key? key,
     required this.name,
     required this.menuIndex,
+    required this.maxWidth,
   }) : super(key: key);
 
   @override
@@ -23,7 +25,7 @@ class FarmerCollapsingNavigationDrawer extends StatefulWidget {
 class _FarmerCollapsingNavigationDrawerState
     extends State<FarmerCollapsingNavigationDrawer>
     with SingleTickerProviderStateMixin {
-  double maxWidth = 250;
+  double maxWidth = 350;
   double minWidth = 70;
   bool isCollapsed = true;
   late AnimationController _animationController;
@@ -37,6 +39,7 @@ class _FarmerCollapsingNavigationDrawerState
     setState(() {
       username = widget.name;
       currentSelectedIndex = widget.menuIndex;
+      maxWidth = widget.maxWidth;
     });
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
