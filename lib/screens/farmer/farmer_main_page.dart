@@ -27,6 +27,9 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
   final TextEditingController _harvestDateController = TextEditingController();
   final TextEditingController _harvestController = TextEditingController();
 
+  final DateRangePickerController _harvestDatePickerController =
+      DateRangePickerController();
+
   String? _username;
   int? _farmerid;
   String? _enterprisename;
@@ -97,17 +100,17 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
               children: const [
                 Text(
                   "บันทึกการปลูก",
-                  softWrap: true,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 25),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  "พืชกระท่อม",
-                  softWrap: true,
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                Expanded(
+                  child: Text(
+                    "พืชกระท่อม",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -373,27 +376,40 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
       height: MediaQuery.of(context).size.height * 0.5,
       width: MediaQuery.of(context).size.width * 0.75,
       child: SfDateRangePicker(
-        showNavigationArrow: true,
-        onSubmit: (value) {
-          Navigator.pop(context);
-        },
-        onCancel: () {
-          Navigator.pop(context);
-        },
-        onSelectionChanged: _onSelectionChanged,
-        selectionMode: DateRangePickerSelectionMode.single,
-        enablePastDates: false,
-        initialSelectedRange: PickerDateRange(
-          DateTime.now(),
-          DateTime.now().add(const Duration(days: 60)),
-        ),
-      ),
+          controller: _harvestDatePickerController,
+          showNavigationArrow: true,
+          onSubmit: (value) {
+            Navigator.pop(context);
+          },
+          onCancel: () {
+            Navigator.pop(context);
+          },
+          onSelectionChanged: _onSelectionChanged,
+          selectionMode: DateRangePickerSelectionMode.single,
+          enablePastDates: false,
+          initialDisplayDate: DateTime.now(),
+          initialSelectedDate: DateTime.now()
+
+          // initialSelectedRange: PickerDateRange(
+          //   DateTime.now(),
+          //   DateTime.now().add(const Duration(days: 60)),
+          // ),
+          ),
     );
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    // var dt = DateFormat('dd/MM/yyyy').format(args.value);
+    DateTime dt = args.value;
+    int normalyear = dt.year;
+    var buddhisyear = normalyear + 543;
+    var str = DateFormat('dd/MM/yyyy')
+        .format(args.value)
+        .replaceAll(normalyear.toString(), buddhisyear.toString());
+
     setState(() {
-      _harvestDateController.text = DateFormat('dd/MM/yyyy').format(args.value);
+      // _harvestDateController.text = DateFormat('dd/MM/yyyy').format(args.value);
+      _harvestDateController.text = str;
     });
     Navigator.pop(context);
   }
