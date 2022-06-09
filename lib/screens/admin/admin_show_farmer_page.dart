@@ -63,7 +63,6 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
 
   Future<String?> getFarmerList() async {
     var response = await getAllFarmers(token);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -221,10 +220,7 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
         if (snapshot.hasData) {
           List? farmers = jsonDecode(snapshot.data.toString())['farmers'];
 
-          print(farmers);
-
           if (farmers!.isEmpty) {
-            print("farmer is empty");
             myList = [notFoundWidget, const SizedBox(height: 20)];
           } else {
             myList = [
@@ -241,7 +237,7 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
                                   builder: (context) => AdminEditFarmerPage(
                                       farmerid: item['farmer_id']),
                                 )).then((value) => setState(() {
-                                  print(value);
+                                  
                                 }));
                           },
                           icon: const Icon(Icons.edit)),

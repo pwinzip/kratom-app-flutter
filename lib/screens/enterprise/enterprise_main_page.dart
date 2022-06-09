@@ -222,11 +222,9 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
                                   });
                                   var response =
                                       await addSale(json, enterpriseid, token);
-                                  print(response.statusCode);
                                   if (response.statusCode == 200) {
                                     _saleDateController.clear();
                                     _saleAmountController.clear();
-                                    print("successful");
                                     setState(() {});
                                   }
                                 }
@@ -263,7 +261,7 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
 
         if (snapshot.hasData) {
           Map<String, dynamic> data = jsonDecode(snapshot.data.toString());
-          print(data);
+          
           List? sales = data['sale'];
 
           if (sales!.isEmpty) {

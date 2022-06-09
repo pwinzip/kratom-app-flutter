@@ -276,7 +276,6 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         setState(() {
           _selectedItem = value;
         });
-        print(_selectedItem!.id);
       },
     );
   }

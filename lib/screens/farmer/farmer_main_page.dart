@@ -426,7 +426,6 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
 
               var response = await saveFarmerPlant(json, _farmerid, _token);
               if (response.statusCode == 200) {
-                print("add new plant");
                 await Future.delayed(const Duration(seconds: 1));
 
                 if (!mounted) return;

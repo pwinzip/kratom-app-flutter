@@ -286,8 +286,6 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
                                         });
                                         var response = await editFarmer(
                                             json, widget.farmerid, token);
-                                        print(response.statusCode);
-                                        print(response.body);
                                         if (response.statusCode == 200) {
                                           await Future.delayed(
                                               const Duration(seconds: 1));
@@ -319,7 +317,6 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
         setState(() {
           _selectedItem = value;
         });
-        print(_selectedItem!.id);
       },
     );
   }

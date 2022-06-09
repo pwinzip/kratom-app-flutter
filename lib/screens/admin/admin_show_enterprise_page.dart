@@ -74,8 +74,6 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
 
   Future<String?> getEnterpriseList() async {
     var response = await getAllEnterprises(token);
-    // print(response.body);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -254,7 +252,6 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
                                 _telController.clear();
                                 _passController.clear();
                                 _nameController.clear();
-                                print("successful");
                                 setState(() {});
                               }
                             }

@@ -125,7 +125,6 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
 
         if (snapshot.hasData) {
           Map<String, dynamic> data = jsonDecode(snapshot.data.toString());
-          print(data);
           var jsonFarmer = data['farmer'];
           var jsonUser = data['user'];
           var jsonEnterprise = data['enterprise'];

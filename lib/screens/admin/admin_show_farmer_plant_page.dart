@@ -132,7 +132,7 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
 
         if (snapshot.hasData) {
           Map<String, dynamic> data = jsonDecode(snapshot.data.toString());
-          print(data);
+ 
           var jsonFarmer = data['farmer'];
           var jsonUser = data['user'];
           var jsonEnterprise = data['enterprise'];

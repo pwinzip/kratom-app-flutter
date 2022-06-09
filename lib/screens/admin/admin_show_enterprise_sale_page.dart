@@ -132,7 +132,6 @@ class _AdminShowEnterpriseSalePageState
 
         if (snapshot.hasData) {
           Map<String, dynamic> data = jsonDecode(snapshot.data.toString());
-          print(data);
           var jsonEnterprise = data['enterprise'];
           var jsonAgent = data['agent'];
           List? sales = data['sale'];

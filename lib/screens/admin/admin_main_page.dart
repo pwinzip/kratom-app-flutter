@@ -34,7 +34,6 @@ class _AdminMainPageState extends State<AdminMainPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
     final SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
@@ -229,7 +228,6 @@ class _AdminMainPageState extends State<AdminMainPage> {
                                 _telController.text = "";
                                 _passController.text = "";
                                 _nameController.text = "";
-                                print("successful");
                                 setState(() {});
                               }
                             }

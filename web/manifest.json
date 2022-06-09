@@ -1,6 +1,6 @@
 {
-    "name": "Kratom App",
-    "short_name": "kratomapp",
+    "name": "Kratom Application",
+    "short_name": "KRATOM APP",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
@@ -8,8 +8,7 @@
     "description": "Kratom PWA project by Thai Kratom Association.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
-    "icons": [
-        {
+    "icons": [{
             "src": "icons/android-icon-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
@@ -18,11 +17,11 @@
             "src": "icons/ic_launcher-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
-       },
+        },
         {
-             "src": "icons/ic_launcher144x144",
-             "sizes": "144x144",
-             "type": "image/png"
+            "src": "icons/ic_launcher-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png"
         }
     ]
 }
