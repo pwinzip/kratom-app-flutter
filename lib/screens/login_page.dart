@@ -92,22 +92,16 @@ class _LoginPageState extends State<LoginPage> {
               var response =
                   await login(_telController.text, _passController.text);
 
-              // print(response.statusCode);
-              // print(response.body);
-
               if (response.statusCode == 200) {
                 setState(() {
                   errorText = null;
                 });
                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                print(response.body);
+               
                 var useridJson = jsonDecode(response.body)['user']['id'];
                 var nameJson = jsonDecode(response.body)['user']['name'];
                 var roleJson = jsonDecode(response.body)['user']['role'];
                 var tokenJson = jsonDecode(response.body)['token'];
-
-                print(tokenJson);
-                print(jsonDecode(response.body)['token']);
 
                 await prefs.setInt('userid', useridJson);
                 await prefs.setString('username', nameJson);
@@ -234,6 +228,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       child: TextFormField(
         controller: _passController,
+        obscureText: true,
         keyboardType: TextInputType.visiblePassword,
         validator: (value) {
           if (value!.isEmpty) {

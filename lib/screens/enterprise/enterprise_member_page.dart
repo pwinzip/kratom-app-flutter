@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../commons/card_info.dart';
 import '../../commons/enterprise_collapsing_navigation_drawer.dart';
 import '../../services/enterprise_service.dart';
+import '../../theme.dart';
 
 class EnterpriseMemberPage extends StatefulWidget {
   const EnterpriseMemberPage({Key? key}) : super(key: key);
@@ -16,6 +17,8 @@ class EnterpriseMemberPage extends StatefulWidget {
 }
 
 class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   int? enterpriseid;
   String? enterprisename;
@@ -29,7 +32,7 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       enterpriseid = prefs.getInt("enterpriseid")!;
@@ -44,22 +47,13 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
 
   Future<void> getEnterpriseInfo() async {
     var response = await getEnterpriseMembers(enterpriseid, token);
-    print(response.statusCode);
-    setState(() {
-      _registNo = jsonDecode(response.body)['enterprise']['regist_no'];
-      _members = jsonDecode(response.body)['members'];
-      _numMember = jsonDecode(response.body)['memberAmount'].toString();
-      _numPlant = jsonDecode(response.body)['plantAmount'].toString();
-    });
-  }
-
-  Future<String?> getMembers() async {
-    var response = await getSales(enterpriseid, token);
-    print(response.statusCode);
     if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      return null;
+      setState(() {
+        _registNo = jsonDecode(response.body)['enterprise']['regist_no'];
+        _members = jsonDecode(response.body)['members'];
+        _numMember = jsonDecode(response.body)['memberAmount'].toString();
+        _numPlant = jsonDecode(response.body)['plantAmount'].toString();
+      });
     }
   }
 
@@ -106,9 +100,11 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
                       fontSize: 25),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  "แจ้งความต้องการขาย",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                Expanded(
+                  child: Text(
+                    "สมาชิกเกษตรกร",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -188,25 +184,30 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
 
   Widget showMemberLists() {
     List<Widget> myList = [];
-    myList = [
-      Column(
-        children: _members.map((item) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text(item['name']),
-              subtitle: Text(item['address']),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("คงอยู่ ${item['remain']} ต้น"),
-                ],
+    if (_members.isEmpty) {
+      myList = [notFoundWidget, const SizedBox(height: 20)];
+    } else {
+      myList = [
+        Column(
+          children: _members.map((item) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(item['name']),
+                subtitle: Text(item['address']),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("คงอยู่ ${item['remain']} ต้น"),
+                  ],
+                ),
               ),
-            ),
-          );
-        }).toList(),
-      ),
-    ];
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 20)
+      ];
+    }
 
     return Center(
       child: Column(

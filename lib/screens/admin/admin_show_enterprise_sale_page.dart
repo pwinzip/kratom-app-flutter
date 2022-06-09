@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../commons/admin_collapsing_navigation_drawer.dart';
 import '../../services/enterprise_service.dart';
+import '../../theme.dart';
 
 class AdminShowEnterpriseSalePage extends StatefulWidget {
   final int? entid;
@@ -19,25 +20,24 @@ class AdminShowEnterpriseSalePage extends StatefulWidget {
 
 class _AdminShowEnterpriseSalePageState
     extends State<AdminShowEnterpriseSalePage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   String? token;
 
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       token = prefs.getString("token")!;
-    });
-    setState(() {
       isLoading = false;
     });
   }
 
   Future<String?> getEnterpriseSale() async {
     var response = await getSales(widget.entid, token);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -77,7 +77,7 @@ class _AdminShowEnterpriseSalePageState
         children: [
           const SizedBox(height: 25),
           Padding(
-            padding: const EdgeInsets.only(left: 40),
+            padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
                 IconButton(
@@ -98,9 +98,11 @@ class _AdminShowEnterpriseSalePageState
                       fontSize: 25),
                 ),
                 const SizedBox(width: 10),
-                const Text(
-                  "แจ้งความต้องการขาย",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                const Expanded(
+                  child: Text(
+                    "แจ้งความต้องการขาย",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -148,10 +150,7 @@ class _AdminShowEnterpriseSalePageState
           );
 
           if (sales!.isEmpty) {
-            myWidgetList.add(const Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text('ไม่พบข้อมูล'),
-            ));
+            myWidgetList.add(notFoundWidget);
           } else {
             myWidgetList.add(
               Column(
@@ -160,8 +159,9 @@ class _AdminShowEnterpriseSalePageState
                     padding: const EdgeInsets.all(4.0),
                     child: ListTile(
                       title: const Text("วันที่ทำรายการ"),
-                      subtitle: Text(DateFormat('dd/MM/yyyy').format(
-                          DateTime.parse(item['created_at']).toLocal())),
+                      subtitle: Text(formatBuddhistYear(
+                          DateFormat('dd/MM/yyyy'),
+                          DateTime.parse(item['created_at']))),
                       trailing: Column(
                         children: [
                           Row(
@@ -169,8 +169,9 @@ class _AdminShowEnterpriseSalePageState
                             children: [
                               const Icon(Icons.calendar_month),
                               const SizedBox(width: 5),
-                              Text(formatBuddhistYear(DateFormat('dd/MM/yyyy'),
-                                  DateTime.parse(item['date_for_sale']))),
+                              Text(DateFormat('dd/MM/yyyy').format(
+                                  DateTime.parse(item['date_for_sale'])
+                                      .toLocal())),
                             ],
                           ),
                           Row(

@@ -22,7 +22,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
-  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   String? username;
   String? token;
@@ -35,10 +35,10 @@ class _AdminMainPageState extends State<AdminMainPage> {
 
   Future<void> getSharedPreferences() async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
-    final SharedPreferences preferences = await prefs;
+    final SharedPreferences prefs = await _prefs;
     setState(() {
-      username = preferences.getString("username")!;
-      token = preferences.getString("token")!;
+      username = prefs.getString("username")!;
+      token = prefs.getString("token")!;
     });
     await getEnterprise();
     await getMember();
@@ -80,7 +80,6 @@ class _AdminMainPageState extends State<AdminMainPage> {
 
   Future<String?> getAdminList() async {
     var response = await getAllAdmins(token);
-
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -131,9 +130,11 @@ class _AdminMainPageState extends State<AdminMainPage> {
                       fontSize: 25),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  "ผู้ดูแลระบบ",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                Expanded(
+                  child: Text(
+                    "ผู้ดูแลระบบ",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -345,12 +346,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
           List? admins = jsonDecode(snapshot.data.toString());
 
           if (admins!.isEmpty) {
-            myList = [
-              const Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('ไม่พบข้อมูล'),
-              )
-            ];
+            myList = [notFoundWidget];
           } else {
             myList = [
               Column(

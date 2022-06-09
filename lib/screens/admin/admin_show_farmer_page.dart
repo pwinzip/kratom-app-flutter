@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../commons/admin_collapsing_navigation_drawer.dart';
 import '../../commons/card_info.dart';
 import '../../services/admin_service.dart';
+import '../../theme.dart';
 import 'admin_add_farmer_page.dart';
 import 'admin_edit_farmer_page.dart';
 import 'admin_show_farmer_plant_page.dart';
@@ -19,6 +20,8 @@ class AdminShowFarmerPage extends StatefulWidget {
 }
 
 class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   String? token;
 
@@ -28,7 +31,7 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       token = prefs.getString("token")!;
@@ -42,18 +45,20 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
 
   Future<void> getFarmersNum() async {
     var response = await getFarmerNumber(token);
-    print(response.body);
-    setState(() {
-      _numFarmer = jsonDecode(response.body)['num'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _numFarmer = jsonDecode(response.body)['num'].toString();
+      });
+    }
   }
 
   Future<void> getPlantsNum() async {
     var response = await getPlantNumber(token);
-    print(response.body);
-    setState(() {
-      _numPlant = jsonDecode(response.body)['num'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _numPlant = jsonDecode(response.body)['num'].toString();
+      });
+    }
   }
 
   Future<String?> getFarmerList() async {
@@ -109,9 +114,11 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
                       fontSize: 25),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  "เกษตรกร",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                Expanded(
+                  child: Text(
+                    "เกษตรกร",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -183,7 +190,10 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       const AdminAddFarmerPage(),
-                                )).then((_) => setState(() {}));
+                                )).then((value) => setState(() {
+                                  getFarmersNum();
+                                  getPlantsNum();
+                                }));
                           },
                           icon: const Icon(Icons.add_circle_outline))
                     ],
@@ -211,13 +221,11 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
         if (snapshot.hasData) {
           List? farmers = jsonDecode(snapshot.data.toString())['farmers'];
 
+          print(farmers);
+
           if (farmers!.isEmpty) {
-            myList = [
-              const Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('ไม่พบข้อมูล'),
-              )
-            ];
+            print("farmer is empty");
+            myList = [notFoundWidget, const SizedBox(height: 20)];
           } else {
             myList = [
               Column(
@@ -232,7 +240,9 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
                                 MaterialPageRoute(
                                   builder: (context) => AdminEditFarmerPage(
                                       farmerid: item['farmer_id']),
-                                )).then((value) => setState(() {}));
+                                )).then((value) => setState(() {
+                                  print(value);
+                                }));
                           },
                           icon: const Icon(Icons.edit)),
                       title: Text(item['name']),

@@ -28,6 +28,8 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
   final TextEditingController _harvestDateController = TextEditingController();
   final TextEditingController _harvestController = TextEditingController();
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   final DateRangePickerController _harvestDatePickerController =
       DateRangePickerController();
 
@@ -42,7 +44,7 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       _username = prefs.getString("username")!;
       _farmerid = prefs.getInt('farmerid')!;
@@ -58,10 +60,12 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
 
   Future<void> getPlants() async {
     var response = await getPlantAmount(_farmerid, _token!);
-    setState(() {
-      _remainPlants = jsonDecode(response.body)['remain'].toString();
-      _addonPlants = jsonDecode(response.body)['addon'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _remainPlants = jsonDecode(response.body)['remain'].toString();
+        _addonPlants = jsonDecode(response.body)['addon'].toString();
+      });
+    }
   }
 
   @override
@@ -211,7 +215,8 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
                         ),
                         harvestInput(),
                         const SizedBox(height: 16),
-                        savePlantBtn()
+                        savePlantBtn(),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),

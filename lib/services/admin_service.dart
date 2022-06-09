@@ -102,35 +102,3 @@ Future<http.Response> getPlantNumber(String? token) async {
 
   return response;
 }
-
-// Future<http.Response> addFarmerEnterprise(json, entid, String? token) async {
-//   var url = Uri.parse(apiURL + 'addfarmers/' + entid);
-
-//   var response = await http.post(url, body: json, headers: {
-//     HttpHeaders.contentTypeHeader: 'application/json',
-//     HttpHeaders.authorizationHeader: 'Bearer $token',
-//   });
-//   return response;
-// }
-
-// Future<void> changeUserStatus(int? uid, String? token) async {
-//   var url = Uri.parse(apiURL + 'changeuserstatus/' + uid!.toString());
-
-//   await http.post(url, headers: {
-//     HttpHeaders.contentTypeHeader: 'application/json',
-//     HttpHeaders.authorizationHeader: 'Bearer $token',
-//   });
-// }
-
-// Future<http.Response> getAllEnterpriseMembers(int entid, String token) async {
-//   var url = Uri.parse(apiURL + 'enterprisemembers/$entid');
-//   var response = await http.get(url, headers: {
-//     HttpHeaders.contentTypeHeader: 'application/json',
-//     HttpHeaders.authorizationHeader: 'Bearer $token',
-//   });
-
-//   print(response.statusCode);
-//   return response;
-// }
-
-

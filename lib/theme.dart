@@ -13,6 +13,10 @@ InputDecoration defaultInputDecoration(String label, {String suffix = ""}) =>
       border: InputBorder.none,
       errorBorder: errorBorder,
     );
+
+TextStyle dataNotFound = TextStyle(
+    fontSize: 18, fontWeight: FontWeight.w600, color: Colors.cyan[900]);
+
 TextStyle errorInputTextStyle =
     const TextStyle(color: Colors.red, fontSize: 16);
 TextStyle labelInputStyle =
@@ -30,4 +34,15 @@ OutlineInputBorder defaultBorder = const OutlineInputBorder(
 );
 UnderlineInputBorder errorBorder = const UnderlineInputBorder(
   borderSide: BorderSide(color: Colors.red),
+);
+
+Widget notFoundWidget = Align(
+  alignment: Alignment.center,
+  child: Padding(
+    padding: const EdgeInsets.only(top: 16),
+    child: Text(
+      'ไม่พบข้อมูล',
+      style: dataNotFound,
+    ),
+  ),
 );

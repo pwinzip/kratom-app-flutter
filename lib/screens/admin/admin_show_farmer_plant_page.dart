@@ -9,6 +9,7 @@ import '../../commons/admin_collapsing_navigation_drawer.dart';
 import '../../commons/card_plant.dart';
 import '../../commons/format_buddhist_year.dart';
 import '../../services/farmer_service.dart';
+import '../../theme.dart';
 
 class AdminShowFarmerPlantPage extends StatefulWidget {
   final int? farmerid;
@@ -20,23 +21,23 @@ class AdminShowFarmerPlantPage extends StatefulWidget {
 }
 
 class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   String? token;
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       token = prefs.getString("token")!;
-
       isLoading = false;
     });
   }
 
   Future<String?> getFarmerPlant() async {
     var response = await getAllPlants(widget.farmerid, token);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -76,7 +77,7 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
         children: [
           const SizedBox(height: 25),
           Padding(
-            padding: const EdgeInsets.only(left: 40),
+            padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
                 IconButton(
@@ -97,9 +98,11 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
                       fontSize: 25),
                 ),
                 const SizedBox(width: 10),
-                const Text(
-                  "บันทึกการปลูก",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                const Expanded(
+                  child: Text(
+                    "บันทึกการปลูก",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -149,10 +152,7 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
           ));
 
           if (plants!.isEmpty) {
-            myWidgetList.add(const Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text('ไม่พบข้อมูล'),
-            ));
+            myWidgetList.add(notFoundWidget);
           } else {
             myWidgetList.add(
               Column(
@@ -224,7 +224,8 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
                                     title: "เก็บเกี่ยว",
                                     // date_for_harvest
                                     value: DateFormat('dd/MM/yyyy').format(
-                                        DateTime.parse(item['date_for_sale'])),
+                                        DateTime.parse(item['date_for_harvest'])
+                                            .toLocal()),
                                     icon: FontAwesomeIcons.calendarCheck,
                                     bgColor:
                                         const Color.fromRGBO(215, 250, 218, 1),
@@ -236,7 +237,8 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
                                     title: "ปริมาณที่ได้",
                                     suffix: "กก.",
                                     // quantity_for_harvest
-                                    value: item['quantity_for_sale'].toString(),
+                                    value:
+                                        item['quantity_for_harvest'].toString(),
                                     icon: FontAwesomeIcons.envira,
                                     bgColor:
                                         const Color.fromRGBO(233, 215, 250, 1),

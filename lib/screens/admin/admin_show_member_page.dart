@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../commons/admin_collapsing_navigation_drawer.dart';
 import '../../commons/card_info.dart';
 import '../../services/enterprise_service.dart';
+import '../../theme.dart';
 
 class AdminShowMemberPage extends StatefulWidget {
   final int? entid;
@@ -18,6 +19,8 @@ class AdminShowMemberPage extends StatefulWidget {
 }
 
 class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   String? token;
 
@@ -29,7 +32,7 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username");
       token = prefs.getString("token");
@@ -42,12 +45,14 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
 
   Future<void> getMembers() async {
     var response = await getEnterpriseMembers(widget.entid, token);
-    setState(() {
-      _enterprise = jsonDecode(response.body)['enterprise'];
-      _members = jsonDecode(response.body)['members'];
-      _numMember = jsonDecode(response.body)['memberAmount'].toString();
-      _numPlant = jsonDecode(response.body)['plantAmount'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _enterprise = jsonDecode(response.body)['enterprise'];
+        _members = jsonDecode(response.body)['members'];
+        _numMember = jsonDecode(response.body)['memberAmount'].toString();
+        _numPlant = jsonDecode(response.body)['plantAmount'].toString();
+      });
+    }
   }
 
   @override
@@ -82,7 +87,7 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
         children: [
           const SizedBox(height: 25),
           Padding(
-            padding: const EdgeInsets.only(left: 40),
+            padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
                 IconButton(
@@ -103,9 +108,11 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
                       fontSize: 25),
                 ),
                 const SizedBox(width: 10),
-                const Text(
-                  "กลุ่มวิสาหกิจ",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                const Expanded(
+                  child: Text(
+                    "กลุ่มวิสาหกิจ",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -191,12 +198,7 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
     List<Widget> myList = [];
 
     if (_members.isEmpty) {
-      myList = [
-        const Padding(
-          padding: EdgeInsets.only(top: 16),
-          child: Text('ไม่พบข้อมูล'),
-        )
-      ];
+      myList = [notFoundWidget];
     } else {
       myList = [
         Column(

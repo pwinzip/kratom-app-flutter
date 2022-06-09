@@ -38,7 +38,7 @@ class _AdminCollapsingNavigationDrawerState
   int currentSelectedIndex = 0;
   String username = "ผู้ใช้";
 
-  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -143,7 +143,7 @@ class _AdminCollapsingNavigationDrawerState
   }
 
   void userLogout() async {
-    final SharedPreferences preferences = await prefs;
-    await logout(preferences.getString('token')!);
+    final SharedPreferences prefs = await _prefs;
+    await logout(prefs.getString('token')!);
   }
 }

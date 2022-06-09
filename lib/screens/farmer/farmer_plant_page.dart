@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../commons/card_plant.dart';
 import '../../commons/farmer_collapsing_navigation_drawer.dart';
 import '../../services/farmer_service.dart';
+import '../../theme.dart';
 
 class FarmerPlantPage extends StatefulWidget {
   const FarmerPlantPage({Key? key}) : super(key: key);
@@ -18,6 +19,7 @@ class FarmerPlantPage extends StatefulWidget {
 }
 
 class _FarmerPlantPageState extends State<FarmerPlantPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   String? username;
   int? farmerid;
   String? enterprisename;
@@ -27,21 +29,19 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       farmerid = prefs.getInt('farmerid')!;
       enterprisename = prefs.getString("enterprisename")!;
       agentname = prefs.getString("agentname")!;
       token = prefs.getString("token")!;
-
       isLoading = false;
     });
   }
 
   Future<String?> getFarmerPlant() async {
     var response = await getAllPlants(farmerid, token);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -145,10 +145,7 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
           ));
 
           if (plants!.isEmpty) {
-            myWidgetList.add(const Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text('ไม่พบข้อมูล'),
-            ));
+            myWidgetList = [notFoundWidget, const SizedBox(height: 20)];
           } else {
             myWidgetList.add(
               Column(
@@ -220,7 +217,7 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
                                     title: "เก็บเกี่ยว",
                                     // date_for_harvest
                                     value: DateFormat('dd/MM/yyyy').format(
-                                        DateTime.parse(item['date_for_sale'])
+                                        DateTime.parse(item['date_for_harvest'])
                                             .toLocal()),
                                     icon: FontAwesomeIcons.calendarCheck,
                                     bgColor:
@@ -233,7 +230,8 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
                                     title: "ปริมาณที่ได้",
                                     suffix: "กก.",
                                     // quantity_for_harvest
-                                    value: item['quantity_for_sale'].toString(),
+                                    value:
+                                        item['quantity_for_harvest'].toString(),
                                     icon: FontAwesomeIcons.envira,
                                     bgColor:
                                         const Color.fromRGBO(233, 215, 250, 1),

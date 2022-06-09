@@ -16,9 +16,6 @@ class AdminAddFarmerPage extends StatefulWidget {
 }
 
 class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
-  String? username;
-  String? token;
-
   final _addFarmerFormKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
@@ -29,14 +26,21 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
   final TextEditingController _telController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  String? username;
+  String? token;
+
   List<ListItems>? dropdownItems;
   List<DropdownMenuItem<ListItems>>? dropdownMenuItems;
   ListItems? _selectedItem;
 
   bool isLoading = true;
+  bool _noEnterpriseAdded = false;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       token = prefs.getString("token")!;
@@ -46,20 +50,28 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
 
   Future<void> getEnterpriseList() async {
     var response = await getAllEnterprises(token);
-    var json = jsonDecode(response.body);
-    print(json);
 
-    setState(() {
-      dropdownItems = json.map<ListItems>((item) {
-        return ListItems(item['id'], item['enterprise_name']);
-      }).toList();
-      print(dropdownItems![0].value);
+    if (response.statusCode == 200) {
+      List<dynamic> json = jsonDecode(response.body);
 
-      dropdownMenuItems = buildDropdownMenuItem(dropdownItems);
-      _selectedItem = dropdownMenuItems![0].value;
+      if (json.isEmpty) {
+        setState(() {
+          _noEnterpriseAdded = true;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          dropdownItems = json.map<ListItems>((item) {
+            return ListItems(item['id'], item['enterprise_name']);
+          }).toList();
 
-      isLoading = false;
-    });
+          dropdownMenuItems = buildDropdownMenuItem(dropdownItems);
+          _selectedItem = dropdownMenuItems![0].value;
+
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -108,7 +120,7 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         children: [
           const SizedBox(height: 25),
           Padding(
-            padding: const EdgeInsets.only(left: 40),
+            padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
                 IconButton(
@@ -129,9 +141,11 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
                       fontSize: 25),
                 ),
                 const SizedBox(width: 10),
-                const Text(
-                  "เกษตรกร",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                const Expanded(
+                  child: Text(
+                    "เกษตรกร",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -158,84 +172,94 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                isLoading
-                    ? loading()
-                    : Form(
-                        key: _addFarmerFormKey,
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                _noEnterpriseAdded
+                    ? noEnterpriseList()
+                    : isLoading
+                        ? loading()
+                        : Form(
+                            key: _addFarmerFormKey,
+                            child: Column(
                               children: [
-                                nameInput(),
-                                addressInput(),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                telInput(),
-                                passInput(),
-                              ],
-                            ),
-                            const Divider(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                latInput(),
-                                longInput(),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                areaInput(),
-                                receivedInput(),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                dropdownEnterprise(),
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      if (_addFarmerFormKey.currentState!
-                                          .validate()) {
-                                        var json = jsonEncode({
-                                          "farmerName": _nameController.text,
-                                          "farmerTel": _telController.text,
-                                          "farmerPassword":
-                                              _passController.text,
-                                          "farmerAddress":
-                                              _addressController.text,
-                                          "farmerArea": _areaController.text,
-                                          "farmerLat": _latController.text,
-                                          "farmerLong": _longController.text,
-                                          "farmerReceived":
-                                              _receivedController.text,
-                                          "enterpriseId": _selectedItem!.id,
-                                          "isActive": 1,
-                                        });
-                                        var response =
-                                            await addFarmer(json, token);
-                                        if (response.statusCode == 200) {
-                                          await Future.delayed(
-                                              const Duration(seconds: 1));
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    nameInput(),
+                                    addressInput(),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    telInput(),
+                                    passInput(),
+                                  ],
+                                ),
+                                const Divider(),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    latInput(),
+                                    longInput(),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    areaInput(),
+                                    receivedInput(),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    dropdownEnterprise(),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          if (_addFarmerFormKey.currentState!
+                                              .validate()) {
+                                            var json = jsonEncode({
+                                              "farmerName":
+                                                  _nameController.text,
+                                              "farmerTel": _telController.text,
+                                              "farmerPassword":
+                                                  _passController.text,
+                                              "farmerAddress":
+                                                  _addressController.text,
+                                              "farmerArea":
+                                                  _areaController.text,
+                                              "farmerLat": _latController.text,
+                                              "farmerLong":
+                                                  _longController.text,
+                                              "farmerReceived":
+                                                  _receivedController.text,
+                                              "enterpriseId": _selectedItem!.id,
+                                              "isActive": 1,
+                                            });
+                                            var response =
+                                                await addFarmer(json, token);
+                                            if (response.statusCode == 200) {
+                                              await Future.delayed(
+                                                  const Duration(seconds: 1));
 
-                                          if (!mounted) return;
-                                          Navigator.pop(context);
-                                        }
-                                      }
-                                    },
-                                    child: const Text("บันทึกข้อมูล")),
+                                              if (!mounted) return;
+                                              Navigator.pop(context);
+                                            }
+                                          }
+                                        },
+                                        child: const Text("บันทึกข้อมูล")),
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
               ],
             ),
           ),
@@ -451,6 +475,20 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         ),
       ),
     );
+  }
+
+  Widget noEnterpriseList() {
+    return Center(
+        child: Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Text(
+        "โปรดเพิ่มข้อมูลกลุ่มวิสาหกิจก่อน !!",
+        style: TextStyle(
+            color: Colors.green[800],
+            fontSize: 18,
+            fontWeight: FontWeight.w600),
+      ),
+    ));
   }
 
   Widget loading() {

@@ -26,6 +26,8 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
   final DateRangePickerController _saleDatePickerController =
       DateRangePickerController();
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   int? enterpriseid;
   String? enterprisename;
@@ -37,7 +39,7 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       enterpriseid = prefs.getInt("enterpriseid")!;
@@ -53,23 +55,26 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
 
   Future<void> getEnterpriseInfo() async {
     var response = await getEnterpriseMembers(enterpriseid, token);
-    setState(() {
-      _registNo =
-          jsonDecode(response.body)['enterprise']['regist_no'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _registNo =
+            jsonDecode(response.body)['enterprise']['regist_no'].toString();
+      });
+    }
   }
 
   Future<void> getMembers() async {
     var response = await getEnterpriseMembers(enterpriseid, token);
-    setState(() {
-      _numMember = jsonDecode(response.body)['memberAmount'].toString();
-      _numPlant = jsonDecode(response.body)['plantAmount'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _numMember = jsonDecode(response.body)['memberAmount'].toString();
+        _numPlant = jsonDecode(response.body)['plantAmount'].toString();
+      });
+    }
   }
 
   Future<String?> getEnterpriseSale() async {
     var response = await getSales(enterpriseid, token);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -120,9 +125,11 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
                       fontSize: 25),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  "แจ้งความต้องการขาย",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                Expanded(
+                  child: Text(
+                    "แจ้งความต้องการขาย",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -260,16 +267,7 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
           List? sales = data['sale'];
 
           if (sales!.isEmpty) {
-            myWidgetList = [
-              const Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('ไม่พบข้อมูล'),
-              )
-            ];
-            // myWidgetList.add(const Padding(
-            //   padding: EdgeInsets.only(top: 16),
-            //   child: Text('ไม่พบข้อมูล'),
-            // ));
+            myWidgetList = [notFoundWidget];
           } else {
             myWidgetList = [
               Column(
@@ -342,12 +340,8 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            suffixText: "กิโลกรัม",
-            hintText: "ปริมาณที่ต้องการขาย",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration:
+              defaultInputDecoration("ปริมาณที่ต้องการขาย", suffix: "กิโลกรัม"),
         ),
       ),
     );
@@ -378,7 +372,8 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
           },
           decoration: const InputDecoration(
             prefixIcon: Icon(Icons.calendar_month_outlined),
-            hintText: "วันที่ต้องการขาย",
+            labelText: "วันที่ต้องการขาย",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
             border: InputBorder.none,
           ),
         ),
@@ -388,8 +383,8 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
 
   Widget datePicker() {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.8,
-      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.height * 0.5,
+      width: MediaQuery.of(context).size.width * 0.75,
       child: SfDateRangePicker(
         controller: _saleDatePickerController,
         showNavigationArrow: true,

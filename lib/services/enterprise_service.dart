@@ -13,16 +13,6 @@ Future<http.Response> getEnterpriseMembers(entid, String? token) async {
   return response;
 }
 
-// Future<http.Response> getEnterprise(entid, String? token) async {
-//   var url = Uri.parse(apiURL + 'enterprises/$entid');
-
-//   var response = await http.get(url, headers: {
-//     HttpHeaders.contentTypeHeader: 'application/json',
-//     HttpHeaders.authorizationHeader: 'Bearer $token',
-//   });
-//   return response;
-// }
-
 //update Enterprise
 Future<http.Response> editEnterprise(json, entid, String? token) async {
   var url = Uri.parse(apiURL + 'updateenterprise/$entid');

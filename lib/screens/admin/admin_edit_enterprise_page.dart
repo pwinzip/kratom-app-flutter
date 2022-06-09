@@ -25,6 +25,8 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
   final TextEditingController _telController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   String? token;
 
@@ -32,7 +34,8 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
   bool? _status;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       token = prefs.getString("token")!;
@@ -45,24 +48,25 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
 
   Future<void> getEnterpriseData() async {
     var response = await getEnterpriseMembers(widget.entid, token);
-    var jsonEnterprise = jsonDecode(response.body)['enterprise'];
-    var jsonAgent = jsonDecode(response.body)['agent'];
-    print(response.body);
+    if (response.statusCode == 200) {
+      var jsonEnterprise = jsonDecode(response.body)['enterprise'];
+      var jsonAgent = jsonDecode(response.body)['agent'];
 
-    setState(() {
-      _registController.text = jsonEnterprise['regist_no'];
-      _entNameController.text = jsonEnterprise['enterprise_name'];
-      _addressController.text = jsonEnterprise['address'];
-      _nameController.text = jsonAgent['name'];
-      _telController.text = jsonAgent['tel'];
-      _status = jsonEnterprise['is_active'] == 1 ? true : false;
-    });
+      setState(() {
+        _registController.text = jsonEnterprise['regist_no'];
+        _entNameController.text = jsonEnterprise['enterprise_name'];
+        _addressController.text = jsonEnterprise['address'];
+        _nameController.text = jsonAgent['name'];
+        _telController.text = jsonAgent['tel'];
+        _status = jsonEnterprise['is_active'] == 1 ? true : false;
+      });
+    }
   }
 
   @override
   void initState() {
-    super.initState();
     getSharedPreferences();
+    super.initState();
   }
 
   @override
@@ -112,9 +116,11 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
                       fontSize: 25),
                 ),
                 const SizedBox(width: 10),
-                const Text(
-                  "กลุ่มวิสาหกิจ",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                const Expanded(
+                  child: Text(
+                    "กลุ่มวิสาหกิจ",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -246,18 +252,13 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
         ),
         child: TextFormField(
           controller: _registController,
-          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่รหัสกลุ่มวิสาหกิจ";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "รหัสกลุ่มวิสาหกิจ",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("รหัสกลุ่มวิสาหกิจ"),
         ),
       ),
     );
@@ -275,18 +276,13 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
         ),
         child: TextFormField(
           controller: _entNameController,
-          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่ชื่อกลุ่มวิสาหกิจ";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ชื่อกลุ่มวิสาหกิจ",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ชื่อกลุ่มวิสาหกิจ"),
         ),
       ),
     );
@@ -304,18 +300,13 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
         ),
         child: TextFormField(
           controller: _addressController,
-          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่ที่อยู่กลุ่มวิสาหกิจ";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ที่อยู่กลุ่มวิสาหกิจ",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ที่อยู่กลุ่มวิสาหกิจ"),
         ),
       ),
     );
@@ -333,18 +324,13 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
         ),
         child: TextFormField(
           controller: _nameController,
-          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่ชื่อ นามสกุล";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ชื่อ นามสกุล",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ชื่อ นามสกุล"),
         ),
       ),
     );
@@ -362,18 +348,14 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
         ),
         child: TextFormField(
           controller: _telController,
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.phone,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่เบอร์โทรศัพท์";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "เบอร์โทรศัพท์",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("เบอร์โทรศัพท์"),
         ),
       ),
     );

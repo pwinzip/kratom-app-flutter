@@ -30,8 +30,10 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
   final TextEditingController _areaController = TextEditingController();
   final TextEditingController _telController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
-  String _selectedEnterprise = "";
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  String _selectedEnterprise = "";
   List<ListItems>? dropdownItems;
   List<DropdownMenuItem<ListItems>>? dropdownMenuItems;
   ListItems? _selectedItem;
@@ -40,7 +42,8 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
   bool? _farmerStatus;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       token = prefs.getString("token")!;
@@ -53,40 +56,42 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
 
   Future<void> getFarmerData() async {
     var response = await getFarmer(widget.farmerid, token);
-    var jsonFarmer = jsonDecode(response.body)['farmer'];
-    var jsonUser = jsonDecode(response.body)['user'];
-    var jsonEnterprise = jsonDecode(response.body)['enterprise'];
+    if (response.statusCode == 200) {
+      var jsonFarmer = jsonDecode(response.body)['farmer'];
+      var jsonUser = jsonDecode(response.body)['user'];
+      var jsonEnterprise = jsonDecode(response.body)['enterprise'];
 
-    setState(() {
-      _nameController.text = jsonUser['name'];
-      _telController.text = jsonUser['tel'];
-      _addressController.text = jsonFarmer['address'];
-      _latController.text = jsonFarmer['lat'].toString();
-      _longController.text = jsonFarmer['long'].toString();
-      _areaController.text = jsonFarmer['area'].toString();
-      _receivedController.text = jsonFarmer['received_amount'].toString();
-      _selectedEnterprise = jsonEnterprise['enterprise_name'];
-      _farmerStatus = jsonUser['is_active'] == 1 ? true : false;
-    });
-
-    await getEnterpriseList();
+      setState(() {
+        _nameController.text = jsonUser['name'];
+        _telController.text = jsonUser['tel'];
+        _addressController.text = jsonFarmer['address'];
+        _latController.text = jsonFarmer['lat'].toString();
+        _longController.text = jsonFarmer['long'].toString();
+        _areaController.text = jsonFarmer['area'].toString();
+        _receivedController.text = jsonFarmer['received_amount'].toString();
+        _selectedEnterprise = jsonEnterprise['enterprise_name'];
+        _farmerStatus = jsonUser['is_active'] == 1 ? true : false;
+      });
+      await getEnterpriseList();
+    }
   }
 
   Future<void> getEnterpriseList() async {
     var response = await getAllEnterprises(token);
-    var json = jsonDecode(response.body);
 
-    setState(() {
-      dropdownItems = json.map<ListItems>((item) {
-        return ListItems(item['id'], item['enterprise_name']);
-      }).toList();
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
 
-      dropdownMenuItems = buildDropdownMenuItem(dropdownItems);
-
-      var ind = dropdownItems!
-          .indexWhere((element) => element.value == _selectedEnterprise);
-      _selectedItem = dropdownMenuItems![ind].value;
-    });
+      setState(() {
+        dropdownItems = json.map<ListItems>((item) {
+          return ListItems(item['id'], item['enterprise_name']);
+        }).toList();
+        dropdownMenuItems = buildDropdownMenuItem(dropdownItems);
+        var ind = dropdownItems!
+            .indexWhere((element) => element.value == _selectedEnterprise);
+        _selectedItem = dropdownMenuItems![ind].value;
+      });
+    }
   }
 
   @override
@@ -156,9 +161,11 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
                       fontSize: 25),
                 ),
                 const SizedBox(width: 10),
-                const Text(
-                  "เกษตรกร",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                const Expanded(
+                  child: Text(
+                    "เกษตรกร",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),

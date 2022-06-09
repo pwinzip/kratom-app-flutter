@@ -30,6 +30,8 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
   final TextEditingController _telController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? username;
   String? token;
 
@@ -39,7 +41,8 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     setState(() {
       username = prefs.getString("username")!;
       token = prefs.getString("token")!;
@@ -53,21 +56,26 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
 
   Future<void> getEnterprise() async {
     var response = await getEnterpriseNumber(token);
-    setState(() {
-      _numEnterprise = jsonDecode(response.body)['num'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _numEnterprise = jsonDecode(response.body)['num'].toString();
+      });
+    }
   }
 
   Future<void> getMember() async {
     var response = await getFarmerNumber(token);
-    setState(() {
-      _numMember = jsonDecode(response.body)['num'].toString();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        _numMember = jsonDecode(response.body)['num'].toString();
+      });
+    }
   }
 
   Future<String?> getEnterpriseList() async {
     var response = await getAllEnterprises(token);
-
+    // print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -118,9 +126,11 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
                       fontSize: 25),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  "กลุ่มวิสาหกิจ",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                Expanded(
+                  child: Text(
+                    "กลุ่มวิสาหกิจ",
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
               ],
             ),
@@ -424,12 +434,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
           List? enterprises = jsonDecode(snapshot.data.toString());
 
           if (enterprises!.isEmpty) {
-            myList = [
-              const Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('ไม่พบข้อมูล'),
-              )
-            ];
+            myList = [notFoundWidget, const SizedBox(height: 20)];
           } else {
             myList = [
               Column(
@@ -463,7 +468,10 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
                                     builder: (context) =>
                                         AdminShowMemberPage(entid: item['id']),
                                   )).then((value) {
-                                setState(() {});
+                                setState(() {
+                                  getEnterprise();
+                                  getMember();
+                                });
                               });
                             },
                             icon: const Icon(Icons.group),
