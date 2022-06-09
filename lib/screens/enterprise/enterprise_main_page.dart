@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 import '../../commons/card_info.dart';
 import '../../commons/enterprise_collapsing_navigation_drawer.dart';
+import '../../commons/format_buddhist_year.dart';
 import '../../services/enterprise_service.dart';
 import '../../theme.dart';
 
@@ -22,6 +23,8 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
   final _addSaleFormKey = GlobalKey<FormState>();
   final TextEditingController _saleDateController = TextEditingController();
   final TextEditingController _saleAmountController = TextEditingController();
+  final DateRangePickerController _saleDatePickerController =
+      DateRangePickerController();
 
   String? username;
   int? enterpriseid;
@@ -38,7 +41,7 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
     setState(() {
       username = prefs.getString("username")!;
       enterpriseid = prefs.getInt("enterpriseid")!;
-      enterprisename = prefs.getString("username")!;
+      enterprisename = prefs.getString("enterprisename")!;
       token = prefs.getString("token")!;
     });
     await getMembers();
@@ -87,7 +90,11 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
         child: Stack(
           children: [
             enterpriseMainContent(),
-            EnterpriseCollapsingNavigationDrawer(name: username!, menuIndex: 0),
+            EnterpriseCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 0,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -133,29 +140,30 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
             child: isLoading
                 ? loading()
                 : ListView(
-                    primary: false,
                     padding: const EdgeInsets.only(left: 25, right: 20),
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 40),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
                               _registNo,
                               style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w600),
                             ),
-                            Text(
-                              enterprisename!,
-                              style: const TextStyle(fontSize: 18),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                enterprisename!,
+                                style: const TextStyle(fontSize: 18),
+                              ),
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 15),
                       Container(
-                        margin: const EdgeInsets.only(left: 40),
+                        margin: const EdgeInsets.only(left: 20),
                         height: 200,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
@@ -180,42 +188,47 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
                       const SizedBox(height: 15),
                       Form(
                         key: _addSaleFormKey,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        child: Column(
                           children: [
-                            saleDateInput(),
-                            saleAmountInput(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                saleDateInput(),
+                                saleAmountInput(),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (_addSaleFormKey.currentState!.validate()) {
+                                  var json = jsonEncode({
+                                    "saleDate": _saleDateController.text,
+                                    "saleAmount": _saleAmountController.text,
+                                  });
+                                  var response =
+                                      await addSale(json, enterpriseid, token);
+                                  print(response.statusCode);
+                                  if (response.statusCode == 200) {
+                                    _saleDateController.clear();
+                                    _saleAmountController.clear();
+                                    print("successful");
+                                    setState(() {});
+                                  }
+                                }
+                              },
+                              child: const Text("แจ้งความต้องการขาย"),
+                            ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (_addSaleFormKey.currentState!.validate()) {
-                              var json = jsonEncode({
-                                "saleDate": _saleDateController.text,
-                                "saleAmount": _saleAmountController.text,
-                              });
-                              var response =
-                                  await addSale(json, enterpriseid, token);
-                              print(response.statusCode);
-                              if (response.statusCode == 200) {
-                                _saleDateController.clear();
-                                _saleAmountController.clear();
-                                print("successful");
-                                setState(() {});
-                              }
-                            }
-                          },
-                          child: const Text("เพิ่มกลุ่มวิสาหกิจ")),
                       const Padding(
                         padding: EdgeInsets.only(top: 10),
                         child: Text(
@@ -247,34 +260,45 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
           List? sales = data['sale'];
 
           if (sales!.isEmpty) {
-            myWidgetList.add(const Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text('ไม่พบข้อมูล'),
-            ));
+            myWidgetList = [
+              const Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('ไม่พบข้อมูล'),
+              )
+            ];
+            // myWidgetList.add(const Padding(
+            //   padding: EdgeInsets.only(top: 16),
+            //   child: Text('ไม่พบข้อมูล'),
+            // ));
           } else {
-            myWidgetList.add(
+            myWidgetList = [
               Column(
                 children: sales.map((item) {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: ListTile(
                       title: const Text("วันที่ทำรายการ"),
-                      subtitle: Text(DateFormat('dd/MM/yyyy')
-                          .format(DateTime.parse(item['created_at']))),
+                      subtitle: Text(formatBuddhistYear(
+                          DateFormat('dd/MM/yyyy'),
+                          DateTime.parse(item['created_at']))),
                       trailing: Column(
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.calendar_month),
+                              const SizedBox(width: 10),
                               Text(DateFormat('dd/MM/yyyy').format(
-                                  DateTime.parse(item['date_for_sale']))),
+                                  DateTime.parse(item['date_for_sale'])
+                                      .toLocal())),
+                              //
                             ],
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.numbers),
+                              const Icon(Icons.shopping_cart_outlined),
+                              const SizedBox(width: 10),
                               Text("${item['quantity_for_sale']} กิโลกรัม"),
                             ],
                           ),
@@ -283,17 +307,17 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
                     ),
                   );
                 }).toList(),
-              ),
-            );
+              )
+            ];
           }
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           myWidgetList = [loading()];
         }
 
-        return ListView(
-          primary: false,
-          padding: const EdgeInsets.only(left: 25, right: 20),
-          children: myWidgetList,
+        return Center(
+          child: Column(
+            children: myWidgetList,
+          ),
         );
       },
     );
@@ -367,6 +391,7 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
       height: MediaQuery.of(context).size.height * 0.8,
       width: MediaQuery.of(context).size.width * 0.8,
       child: SfDateRangePicker(
+        controller: _saleDatePickerController,
         showNavigationArrow: true,
         onSubmit: (value) {
           Navigator.pop(context);
@@ -377,18 +402,18 @@ class _EnterpriseMainPageState extends State<EnterpriseMainPage> {
         onSelectionChanged: _onSelectionChanged,
         selectionMode: DateRangePickerSelectionMode.single,
         enablePastDates: false,
+        // initialDisplayDate: DateTime.now(),
+        initialSelectedDate: DateTime.now().add(const Duration(days: 7)),
         minDate: DateTime.now().add(const Duration(days: 7)),
-        initialSelectedRange: PickerDateRange(
-          DateTime.now(),
-          DateTime.now().add(const Duration(days: 7)),
-        ),
       ),
     );
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
-      _saleDateController.text = DateFormat('dd/MM/yyyy').format(args.value);
+      _saleDateController.text =
+          formatBuddhistYear(DateFormat("dd/MM/yyyy"), args.value);
+      // _saleDateController.text = DateFormat('dd/MM/yyyy').format(args.value);
     });
     Navigator.pop(context);
   }

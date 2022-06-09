@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kratomapp/commons/format_buddhist_year.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
@@ -32,8 +33,8 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
 
   String? _username;
   int? _farmerid;
-  String? _enterprisename;
-  String? _agentname;
+  // String? _enterprisename;
+  // String? _agentname;
   String? _token;
 
   String? _remainPlants;
@@ -45,8 +46,8 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
     setState(() {
       _username = prefs.getString("username")!;
       _farmerid = prefs.getInt('farmerid')!;
-      _enterprisename = prefs.getString("enterprisename")!;
-      _agentname = prefs.getString("agentname")!;
+      // _enterprisename = prefs.getString("enterprisename")!;
+      // _agentname = prefs.getString("agentname")!;
       _token = prefs.getString("token")!;
     });
     await getPlants();
@@ -168,7 +169,7 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
-                    'บันทึกข้อมูลวันที่ ${DateFormat('dd MMMM yyyy', 'th').format(DateTime.now())}',
+                    'บันทึกข้อมูลวันที่ ${formatBuddhistYear(DateFormat('dd MMMM yyyy'), DateTime.now())}',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w600),
                   ),
@@ -388,28 +389,15 @@ class _FarmerMainPageState extends State<FarmerMainPage> {
           selectionMode: DateRangePickerSelectionMode.single,
           enablePastDates: false,
           initialDisplayDate: DateTime.now(),
-          initialSelectedDate: DateTime.now()
-
-          // initialSelectedRange: PickerDateRange(
-          //   DateTime.now(),
-          //   DateTime.now().add(const Duration(days: 60)),
-          // ),
-          ),
+          initialSelectedDate: DateTime.now()),
     );
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-    // var dt = DateFormat('dd/MM/yyyy').format(args.value);
-    DateTime dt = args.value;
-    int normalyear = dt.year;
-    var buddhisyear = normalyear + 543;
-    var str = DateFormat('dd/MM/yyyy')
-        .format(args.value)
-        .replaceAll(normalyear.toString(), buddhisyear.toString());
-
     setState(() {
       // _harvestDateController.text = DateFormat('dd/MM/yyyy').format(args.value);
-      _harvestDateController.text = str;
+      _harvestDateController.text =
+          formatBuddhistYear(DateFormat("dd/MM/yyyy"), args.value);
     });
     Navigator.pop(context);
   }

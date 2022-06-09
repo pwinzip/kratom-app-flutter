@@ -88,7 +88,11 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
         child: Stack(
           children: [
             adminShowEnterpriseContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 1),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 1,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -280,11 +284,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "รหัสกลุ่มวิสาหกิจ",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("รหัสกลุ่มวิสาหกิจ"),
         ),
       ),
     );
@@ -309,11 +309,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ชื่อกลุ่มวิสาหกิจ",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ชื่อกลุ่มวิสาหกิจ"),
         ),
       ),
     );
@@ -338,11 +334,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ที่อยู่กลุ่มวิสาหกิจ",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ที่อยู่กลุ่มวิสาหกิจ"),
         ),
       ),
     );
@@ -367,11 +359,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ชื่อ นามสกุล",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ชื่อ นามสกุล"),
         ),
       ),
     );
@@ -396,11 +384,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "เบอร์โทรศัพท์",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("เบอร์โทรศัพท์"),
         ),
       ),
     );
@@ -424,11 +408,7 @@ class _AdminShowEnterprisePageState extends State<AdminShowEnterprisePage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "รหัสผ่าน",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("รหัสผ่าน"),
         ),
       ),
     );

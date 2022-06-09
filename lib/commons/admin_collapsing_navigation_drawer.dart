@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:kratomapp/models/navigation_model.dart';
 import 'package:kratomapp/screens/admin/admin_main_page.dart';
 import 'package:kratomapp/screens/admin/admin_show_enterprise_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/admin/admin_show_farmer_page.dart';
+import '../screens/login_page.dart';
+import '../services/auth_service.dart';
 import '../theme.dart';
 import 'collapsing_listtile.dart';
 
 class AdminCollapsingNavigationDrawer extends StatefulWidget {
   final String name;
   final int menuIndex;
+  final double maxWidth;
   const AdminCollapsingNavigationDrawer({
     Key? key,
     required this.name,
     required this.menuIndex,
+    required this.maxWidth,
   }) : super(key: key);
 
   @override
@@ -26,11 +31,14 @@ class _AdminCollapsingNavigationDrawerState
     with SingleTickerProviderStateMixin {
   double maxWidth = 250;
   double minWidth = 70;
+
   bool isCollapsed = true;
   late AnimationController _animationController;
   late Animation<double> widthAnimation;
   int currentSelectedIndex = 0;
   String username = "ผู้ใช้";
+
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -38,6 +46,7 @@ class _AdminCollapsingNavigationDrawerState
     setState(() {
       username = widget.name;
       currentSelectedIndex = widget.menuIndex;
+      maxWidth = widget.maxWidth;
     });
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
@@ -89,12 +98,17 @@ class _AdminCollapsingNavigationDrawerState
                                 builder: (context) =>
                                     const AdminShowEnterprisePage()));
                       } else if (counter == 2) {
-                        // AdminShowFarmerPage
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
                                     const AdminShowFarmerPage()));
+                      } else if (counter == 3) {
+                        userLogout();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
                       }
                     },
                     isSelected: currentSelectedIndex == counter,
@@ -126,5 +140,10 @@ class _AdminCollapsingNavigationDrawerState
         ),
       ),
     );
+  }
+
+  void userLogout() async {
+    final SharedPreferences preferences = await prefs;
+    await logout(preferences.getString('token')!);
   }
 }

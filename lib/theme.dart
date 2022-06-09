@@ -4,6 +4,15 @@ import 'package:flutter/material.dart';
 //     color: Colors.white70, fontSize: 18, fontWeight: FontWeight.w600);
 // TextStyle listTileSelectedTextStyle = const TextStyle(
 //     color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600);
+
+InputDecoration defaultInputDecoration(String label, {String suffix = ""}) =>
+    InputDecoration(
+      labelText: label,
+      suffixText: suffix,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      border: InputBorder.none,
+      errorBorder: errorBorder,
+    );
 TextStyle errorInputTextStyle =
     const TextStyle(color: Colors.red, fontSize: 16);
 TextStyle labelInputStyle =
@@ -22,7 +31,3 @@ OutlineInputBorder defaultBorder = const OutlineInputBorder(
 UnderlineInputBorder errorBorder = const UnderlineInputBorder(
   borderSide: BorderSide(color: Colors.red),
 );
-// OutlineInputBorder errorBorder = const OutlineInputBorder(
-//   borderRadius: BorderRadius.all(Radius.circular(16)),
-//   borderSide: BorderSide(color: Colors.red),
-// );

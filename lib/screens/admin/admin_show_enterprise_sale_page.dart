@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:kratomapp/commons/format_buddhist_year.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -57,7 +58,11 @@ class _AdminShowEnterpriseSalePageState
         child: Stack(
           children: [
             adminShowEnterpriseSaleContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 1),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 1,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -132,6 +137,15 @@ class _AdminShowEnterpriseSalePageState
 
           myWidgetList.add(entNameHeader(jsonEnterprise, jsonAgent));
           myWidgetList.add(const SizedBox(height: 8));
+          myWidgetList.add(
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                "ประวัติการแจ้งความต้องการขาย",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+            ),
+          );
 
           if (sales!.isEmpty) {
             myWidgetList.add(const Padding(
@@ -146,15 +160,16 @@ class _AdminShowEnterpriseSalePageState
                     padding: const EdgeInsets.all(4.0),
                     child: ListTile(
                       title: const Text("วันที่ทำรายการ"),
-                      subtitle: Text(DateFormat('dd/MM/yyyy')
-                          .format(DateTime.parse(item['created_at']))),
+                      subtitle: Text(DateFormat('dd/MM/yyyy').format(
+                          DateTime.parse(item['created_at']).toLocal())),
                       trailing: Column(
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.calendar_month),
-                              Text(DateFormat('dd/MM/yyyy').format(
+                              const SizedBox(width: 5),
+                              Text(formatBuddhistYear(DateFormat('dd/MM/yyyy'),
                                   DateTime.parse(item['date_for_sale']))),
                             ],
                           ),
@@ -162,6 +177,7 @@ class _AdminShowEnterpriseSalePageState
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.numbers),
+                              const SizedBox(width: 5),
                               Text("${item['quantity_for_sale']} กิโลกรัม"),
                             ],
                           ),
@@ -247,10 +263,10 @@ class _AdminShowEnterpriseSalePageState
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Divider(),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Text("ประวัติการแจ้งความต้องการขาย"),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(vertical: 8.0),
+          //   child: Text("ประวัติการแจ้งความต้องการขาย"),
+          // ),
         ],
       ),
     );

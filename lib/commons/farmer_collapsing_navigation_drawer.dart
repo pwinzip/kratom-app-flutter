@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kratomapp/models/navigation_model.dart';
 import 'package:kratomapp/screens/farmer/farmer_plant_page.dart';
 import 'package:kratomapp/screens/farmer/farmer_main_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../screens/login_page.dart';
+import '../services/auth_service.dart';
 import '../theme.dart';
 import 'collapsing_listtile.dart';
 
@@ -32,6 +35,8 @@ class _FarmerCollapsingNavigationDrawerState
   late Animation<double> widthAnimation;
   int currentSelectedIndex = 0;
   String username = "ผู้ใช้";
+
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -89,6 +94,12 @@ class _FarmerCollapsingNavigationDrawerState
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const FarmerPlantPage()));
+                      } else if (counter == 2) {
+                        userLogout();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
                       }
                     },
                     isSelected: currentSelectedIndex == counter,
@@ -120,5 +131,10 @@ class _FarmerCollapsingNavigationDrawerState
         ),
       ),
     );
+  }
+
+  void userLogout() async {
+    final SharedPreferences preferences = await prefs;
+    await logout(preferences.getString('token')!);
   }
 }

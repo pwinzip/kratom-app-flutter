@@ -89,7 +89,11 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         child: Stack(
           children: [
             addFarmerContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 2),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 2,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -271,11 +275,7 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ชื่อ นามสกุล",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ชื่อ นามสกุล"),
         ),
       ),
     );
@@ -299,11 +299,7 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ที่อยู่",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ที่อยู่"),
         ),
       ),
     );
@@ -327,11 +323,7 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "เบอร์โทรศัพท์",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("เบอร์โทรศัพท์"),
         ),
       ),
     );
@@ -355,11 +347,7 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "รหัสผ่าน",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("รหัสผ่าน"),
         ),
       ),
     );
@@ -377,17 +365,14 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         ),
         child: TextFormField(
           controller: _latController,
+          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่ละติจูด";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ละติจูด",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ละติจูด"),
         ),
       ),
     );
@@ -405,17 +390,14 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         ),
         child: TextFormField(
           controller: _longController,
+          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่ลองติจูด";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "ลองติจูด",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("ลองติจูด"),
         ),
       ),
     );
@@ -433,18 +415,14 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         ),
         child: TextFormField(
           controller: _areaController,
+          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่พื้นที่ปลูก";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "พื้นที่ปลูก",
-            suffixText: "ไร่",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("พื้นที่ปลูก", suffix: "ไร่"),
         ),
       ),
     );
@@ -462,18 +440,14 @@ class _AdminAddFarmerPageState extends State<AdminAddFarmerPage> {
         ),
         child: TextFormField(
           controller: _receivedController,
+          keyboardType: TextInputType.number,
           validator: (value) {
             if (value!.isEmpty) {
               return "กรุณาใส่จำนวนที่ได้รับ";
             }
             return null;
           },
-          decoration: InputDecoration(
-            hintText: "จำนวนที่ได้รับ",
-            suffixText: "ต้น",
-            border: InputBorder.none,
-            errorBorder: errorBorder,
-          ),
+          decoration: defaultInputDecoration("จำนวนที่ได้รับ", suffix: "ต้น"),
         ),
       ),
     );

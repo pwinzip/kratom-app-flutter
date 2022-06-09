@@ -72,7 +72,11 @@ class _AdminEditEnterprisePageState extends State<AdminEditEnterprisePage> {
         child: Stack(
           children: [
             adminEditEnterpriseConter(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 1),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 1,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),

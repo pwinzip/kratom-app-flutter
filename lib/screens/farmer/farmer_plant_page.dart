@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kratomapp/commons/format_buddhist_year.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -136,7 +137,7 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
             child: Divider(),
           ));
           myWidgetList.add(const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(vertical: 4.0),
             child: Text(
               "ประวัติการบันทึกการปลูก",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
@@ -166,9 +167,9 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
                                 ),
                                 const SizedBox(width: 5),
                                 Expanded(
-                                  child: Text(DateFormat('dd MMMM yyyy', 'th')
-                                      .format(DateTime.parse(item['created_at'])
-                                          .toLocal())),
+                                  child: Text(formatBuddhistYear(
+                                      DateFormat('dd MMMM yyyy'),
+                                      DateTime.parse(item['created_at']))),
                                 ),
                               ],
                             ),
@@ -217,8 +218,10 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
                                   CardPlant(
                                     width: 95,
                                     title: "เก็บเกี่ยว",
+                                    // date_for_harvest
                                     value: DateFormat('dd/MM/yyyy').format(
-                                        DateTime.parse(item['date_for_sale'])),
+                                        DateTime.parse(item['date_for_sale'])
+                                            .toLocal()),
                                     icon: FontAwesomeIcons.calendarCheck,
                                     bgColor:
                                         const Color.fromRGBO(215, 250, 218, 1),
@@ -229,6 +232,7 @@ class _FarmerPlantPageState extends State<FarmerPlantPage> {
                                     width: 95,
                                     title: "ปริมาณที่ได้",
                                     suffix: "กก.",
+                                    // quantity_for_harvest
                                     value: item['quantity_for_sale'].toString(),
                                     icon: FontAwesomeIcons.envira,
                                     bgColor:

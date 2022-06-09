@@ -33,7 +33,7 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
     setState(() {
       username = prefs.getString("username")!;
       enterpriseid = prefs.getInt("enterpriseid")!;
-      enterprisename = prefs.getString("username")!;
+      enterprisename = prefs.getString("enterprisename")!;
       token = prefs.getString("token")!;
     });
     await getEnterpriseInfo();
@@ -44,6 +44,7 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
 
   Future<void> getEnterpriseInfo() async {
     var response = await getEnterpriseMembers(enterpriseid, token);
+    print(response.statusCode);
     setState(() {
       _registNo = jsonDecode(response.body)['enterprise']['regist_no'];
       _members = jsonDecode(response.body)['members'];
@@ -75,7 +76,11 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
         child: Stack(
           children: [
             enterpriseMemberContent(),
-            EnterpriseCollapsingNavigationDrawer(name: username!, menuIndex: 1),
+            EnterpriseCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 1,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -134,9 +139,12 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
                               style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w600),
                             ),
-                            Text(
-                              enterprisename!,
-                              style: const TextStyle(fontSize: 18),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                enterprisename!,
+                                style: const TextStyle(fontSize: 18),
+                              ),
                             ),
                           ],
                         ),
@@ -200,8 +208,10 @@ class _EnterpriseMemberPageState extends State<EnterpriseMemberPage> {
       ),
     ];
 
-    return Column(
-      children: myList,
+    return Center(
+      child: Column(
+        children: myList,
+      ),
     );
   }
 

@@ -51,7 +51,6 @@ Future<http.Response> getFarmer(farmerid, String? token) async {
 
 // edit farmer
 Future<http.Response> editFarmer(json, farmerid, String? token) async {
-  print(farmerid);
   var url = Uri.parse(apiURL + 'updatefarmer/$farmerid');
 
   var response = await http.post(url, body: json, headers: {

@@ -63,7 +63,11 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
         child: Stack(
           children: [
             adminMemberContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 1),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 1,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -185,25 +189,35 @@ class _AdminShowMemberPageState extends State<AdminShowMemberPage> {
 
   Widget showMemberLists() {
     List<Widget> myList = [];
-    myList = [
-      Column(
-        children: _members.map((item) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text(item['name']),
-              subtitle: Text(item['address']),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("คงอยู่ ${item['remain']} ต้น"),
-                ],
+
+    if (_members.isEmpty) {
+      myList = [
+        const Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: Text('ไม่พบข้อมูล'),
+        )
+      ];
+    } else {
+      myList = [
+        Column(
+          children: _members.map((item) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(item['name']),
+                subtitle: Text(item['address']),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("คงอยู่ ${item['remain']} ต้น"),
+                  ],
+                ),
               ),
-            ),
-          );
-        }).toList(),
-      ),
-    ];
+            );
+          }).toList(),
+        ),
+      ];
+    }
 
     return Column(
       children: myList,

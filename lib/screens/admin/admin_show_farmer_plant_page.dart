@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../commons/admin_collapsing_navigation_drawer.dart';
 import '../../commons/card_plant.dart';
+import '../../commons/format_buddhist_year.dart';
 import '../../services/farmer_service.dart';
 
 class AdminShowFarmerPlantPage extends StatefulWidget {
@@ -56,7 +57,11 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
         child: Stack(
           children: [
             adminShowFarmerPlantContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 2),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 2,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -151,101 +156,131 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
           } else {
             myWidgetList.add(
               Column(
-                children: plants.map((item) {
-                  return Container(
-                    padding: const EdgeInsets.only(top: 15),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
                     child: Column(
-                      children: [
-                        Row(
+                      children: plants.map((item) {
+                        return Column(
                           children: [
-                            const Text(
-                              "วันที่บันทึก",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(DateFormat('dd MMMM yyyy', 'th').format(
-                                DateTime.parse(item['created_at']).toLocal())),
-                            const SizedBox(width: 10),
-                            const Text(
-                              "เวลา",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(DateFormat('Hms', 'th').format(
-                                DateTime.parse(item['created_at']).toLocal())),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            CardPlant(
-                              width: 80,
-                              title: "คงอยู่",
-                              suffix: "ต้น",
-                              value: item['remain_plant'].toString(),
-                              icon: FontAwesomeIcons.seedling,
-                              bgColor: const Color.fromRGBO(255, 233, 198, 1),
-                              textColor: const Color.fromRGBO(218, 149, 81, 1),
-                            ),
-                            CardPlant(
-                              width: 80,
-                              title: "ปลูกเพิ่ม",
-                              suffix: "ต้น",
-                              value: item['addon_plant'].toString(),
-                              icon: FontAwesomeIcons.handHoldingDroplet,
-                              bgColor: const Color.fromRGBO(194, 227, 254, 1),
-                              textColor: const Color.fromRGBO(106, 140, 170, 1),
-                            ),
-                            CardPlant(
-                              width: 95,
-                              title: "เก็บเกี่ยว",
-                              value: DateFormat('dd/MM/yyyy').format(
-                                  DateTime.parse(item['date_for_sale'])),
-                              icon: FontAwesomeIcons.envira,
-                              bgColor: const Color.fromRGBO(215, 250, 218, 1),
-                              textColor: const Color.fromRGBO(86, 204, 126, 1),
-                            ),
-                            CardPlant(
-                              width: 95,
-                              title: "ปริมาณที่ได้",
-                              suffix: "กก.",
-                              value: item['quantity_for_sale'].toString(),
-                              icon: FontAwesomeIcons.envira,
-                              bgColor: const Color.fromRGBO(233, 215, 250, 1),
-                              textColor: const Color.fromRGBO(161, 86, 204, 1),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Row(
+                            Row(
                               children: [
                                 const Text(
-                                  "สายพันธุ์ที่ปลูกเพิ่ม",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16),
+                                  "วันที่บันทึก",
+                                  style: TextStyle(fontWeight: FontWeight.w600),
                                 ),
-                                const SizedBox(width: 15),
-                                Text(
-                                  item['addon_species'].toString(),
-                                  softWrap: true,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 16),
-                                )
+                                const SizedBox(width: 5),
+                                Expanded(
+                                  child: Text(formatBuddhistYear(
+                                      DateFormat('dd MMMM yyyy'),
+                                      DateTime.parse(item['created_at']))),
+                                ),
                               ],
                             ),
-                          ),
-                        ),
-                        item == plants.last
-                            ? const SizedBox(height: 8)
-                            : const Divider(),
-                      ],
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Text(
+                                  "เวลา",
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                                const SizedBox(width: 5),
+                                Expanded(
+                                  child: Text(DateFormat('Hms', 'th').format(
+                                      DateTime.parse(item['created_at'])
+                                          .toLocal())),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 130,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  CardPlant(
+                                    width: 80,
+                                    title: "คงอยู่",
+                                    suffix: "ต้น",
+                                    value: item['remain_plant'].toString(),
+                                    icon: FontAwesomeIcons.seedling,
+                                    bgColor:
+                                        const Color.fromRGBO(255, 233, 198, 1),
+                                    textColor:
+                                        const Color.fromRGBO(218, 149, 81, 1),
+                                  ),
+                                  CardPlant(
+                                    width: 80,
+                                    title: "ปลูกเพิ่ม",
+                                    suffix: "ต้น",
+                                    value: item['addon_plant'].toString(),
+                                    icon: FontAwesomeIcons.handHoldingDroplet,
+                                    bgColor:
+                                        const Color.fromRGBO(194, 227, 254, 1),
+                                    textColor:
+                                        const Color.fromRGBO(106, 140, 170, 1),
+                                  ),
+                                  CardPlant(
+                                    width: 95,
+                                    title: "เก็บเกี่ยว",
+                                    // date_for_harvest
+                                    value: DateFormat('dd/MM/yyyy').format(
+                                        DateTime.parse(item['date_for_sale'])),
+                                    icon: FontAwesomeIcons.calendarCheck,
+                                    bgColor:
+                                        const Color.fromRGBO(215, 250, 218, 1),
+                                    textColor:
+                                        const Color.fromRGBO(86, 204, 126, 1),
+                                  ),
+                                  CardPlant(
+                                    width: 95,
+                                    title: "ปริมาณที่ได้",
+                                    suffix: "กก.",
+                                    // quantity_for_harvest
+                                    value: item['quantity_for_sale'].toString(),
+                                    icon: FontAwesomeIcons.envira,
+                                    bgColor:
+                                        const Color.fromRGBO(233, 215, 250, 1),
+                                    textColor:
+                                        const Color.fromRGBO(161, 86, 204, 1),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      "สายพันธุ์ที่ปลูกเพิ่ม",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16),
+                                    ),
+                                    const SizedBox(width: 15),
+                                    Expanded(
+                                      child: Text(
+                                        item['addon_species'].toString(),
+                                        softWrap: true,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 16),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            item == plants.last
+                                ? const SizedBox(height: 20)
+                                : const Divider(),
+                          ],
+                        );
+                      }).toList(),
                     ),
-                  );
-                }).toList(),
+                  ),
+                ],
               ),
             );
           }
@@ -254,7 +289,9 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
         }
 
         return ListView(
-          primary: false,
+          // primary: false,
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
           padding: const EdgeInsets.only(left: 25, right: 20),
           children: myWidgetList,
         );
@@ -264,25 +301,22 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
 
   Widget farmerProfile(jsonFarmer, jsonUser, jsonEnterprise) {
     return Padding(
-      padding: const EdgeInsets.only(top: 40),
+      padding: const EdgeInsets.only(top: 25),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16.0),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-        decoration: const BoxDecoration(
-          // color: Color(0xFFECFBD1),
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               children: [
                 const Icon(Icons.account_box),
                 const SizedBox(width: 20),
-                Text(
-                  jsonUser['name'],
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w600),
+                Expanded(
+                  child: Text(
+                    jsonUser['name'],
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ],
             ),
@@ -291,10 +325,12 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
               children: [
                 const Icon(Icons.call),
                 const SizedBox(width: 20),
-                Text(
-                  "${jsonUser['tel']}",
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w300),
+                Expanded(
+                  child: Text(
+                    "${jsonUser['tel']}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w300),
+                  ),
                 ),
               ],
             ),
@@ -303,10 +339,12 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
               children: [
                 const Icon(Icons.home),
                 const SizedBox(width: 20),
-                Text(
-                  "ที่อยู่: ${jsonFarmer['address']}",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w300),
+                Expanded(
+                  child: Text(
+                    "${jsonFarmer['address']}",
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w300),
+                  ),
                 ),
               ],
             ),
@@ -315,10 +353,12 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
               children: [
                 const Icon(Icons.location_on),
                 const SizedBox(width: 20),
-                Text(
-                  "(${jsonFarmer['lat']}, ${jsonFarmer['long']})",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w300),
+                Expanded(
+                  child: Text(
+                    "(${jsonFarmer['lat']}, ${jsonFarmer['long']})",
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w300),
+                  ),
                 ),
               ],
             ),
@@ -330,28 +370,31 @@ class _AdminShowFarmerPlantPageState extends State<AdminShowFarmerPlantPage> {
                 Text(
                   "พื้นที่: ${jsonFarmer['area']} ไร่",
                   style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w300),
+                      fontSize: 14, fontWeight: FontWeight.w300),
                 ),
                 const SizedBox(width: 30),
-                Text(
-                  "จำนวนที่ได้รับ: ${jsonFarmer['received_amount']} ต้น",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w300),
+                Expanded(
+                  child: Text(
+                    "จำนวนที่ได้รับ: ${jsonFarmer['received_amount']} ต้น",
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w300),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 5),
-            SizedBox(
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Text(
-                    "สังกัดกลุ่ม: ${jsonEnterprise['enterprise_name']}",
+            Row(
+              children: [
+                const Icon(Icons.groups),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Text(
+                    "${jsonEnterprise['enterprise_name']}",
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w300),
+                        fontSize: 14, fontWeight: FontWeight.w300),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

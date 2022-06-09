@@ -79,7 +79,11 @@ class _AdminShowFarmerPageState extends State<AdminShowFarmerPage> {
         child: Stack(
           children: [
             adminShowFarmerContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 2),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 2,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),

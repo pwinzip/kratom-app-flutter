@@ -22,6 +22,8 @@ class _AdminMainPageState extends State<AdminMainPage> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+
   String? username;
   String? token;
 
@@ -32,10 +34,11 @@ class _AdminMainPageState extends State<AdminMainPage> {
   bool isLoading = true;
 
   Future<void> getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences preferences = await prefs;
     setState(() {
-      username = prefs.getString("username")!;
-      token = prefs.getString("token")!;
+      username = preferences.getString("username")!;
+      token = preferences.getString("token")!;
     });
     await getEnterprise();
     await getMember();
@@ -47,23 +50,32 @@ class _AdminMainPageState extends State<AdminMainPage> {
 
   Future<void> getEnterprise() async {
     var response = await getEnterpriseNumber(token);
-    setState(() {
-      _numEnterprise = jsonDecode(response.body)['num'].toString();
-    });
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      setState(() {
+        _numEnterprise = json['num'].toString();
+      });
+    }
   }
 
   Future<void> getMember() async {
     var response = await getFarmerNumber(token);
-    setState(() {
-      _numMember = jsonDecode(response.body)['num'].toString();
-    });
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      setState(() {
+        _numMember = json['num'].toString();
+      });
+    }
   }
 
   Future<void> getAgent() async {
     var response = await getAgentNumber(token);
-    setState(() {
-      _numAgent = jsonDecode(response.body)['num'].toString();
-    });
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      setState(() {
+        _numAgent = json['num'].toString();
+      });
+    }
   }
 
   Future<String?> getAdminList() async {
@@ -89,7 +101,11 @@ class _AdminMainPageState extends State<AdminMainPage> {
         child: Stack(
           children: [
             adminContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 0),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 0,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
@@ -342,24 +358,10 @@ class _AdminMainPageState extends State<AdminMainPage> {
                   // bool adminStatus =
                   //     item['is_active'].toString() == "1" ? true : false;
                   return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8.0),
                     child: ListTile(
                       title: Text(item['name']),
                       subtitle: Text(item['tel']),
-                      // trailing: Row(
-                      //   mainAxisSize: MainAxisSize.min,
-                      //   children: [
-                      //     Switch(
-                      //         value: adminStatus,
-                      //         onChanged: (val) async {
-                      //           setState(() {
-                      //             adminStatus = val;
-                      //           });
-
-                      //           await changeUserStatus(item['id'], token);
-                      //         }),
-                      //   ],
-                      // ),
                     ),
                   );
                 }).toList(),

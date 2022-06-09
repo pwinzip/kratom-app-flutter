@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kratomapp/models/navigation_model.dart';
-import 'package:kratomapp/screens/farmer/farmer_plant_page.dart';
-import 'package:kratomapp/screens/farmer/farmer_main_page.dart';
+import 'package:kratomapp/screens/enterprise/enterprise_main_page.dart';
+import 'package:kratomapp/screens/enterprise/enterprise_member_page.dart';
+import 'package:kratomapp/screens/login_page.dart';
+import 'package:kratomapp/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme.dart';
 import 'collapsing_listtile.dart';
@@ -9,10 +12,12 @@ import 'collapsing_listtile.dart';
 class EnterpriseCollapsingNavigationDrawer extends StatefulWidget {
   final String name;
   final int menuIndex;
+  final double maxWidth;
   const EnterpriseCollapsingNavigationDrawer({
     Key? key,
     required this.name,
     required this.menuIndex,
+    required this.maxWidth,
   }) : super(key: key);
 
   @override
@@ -31,12 +36,15 @@ class _EnterpriseCollapsingNavigationDrawerState
   int currentSelectedIndex = 0;
   String username = "ผู้ใช้";
 
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+
   @override
   void initState() {
     super.initState();
     setState(() {
       username = widget.name;
       currentSelectedIndex = widget.menuIndex;
+      maxWidth = widget.maxWidth;
     });
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
@@ -74,18 +82,26 @@ class _EnterpriseCollapsingNavigationDrawerState
                 itemCount: enterpriseNavigationItems.length,
                 itemBuilder: (context, counter) {
                   return CollapsingListTile(
-                    onTap: () {
+                    onTap: () async {
                       if (counter == currentSelectedIndex) {
                       } else if (counter == 0) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const FarmerMainPage()));
+                                builder: (context) =>
+                                    const EnterpriseMainPage()));
                       } else if (counter == 1) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const FarmerPlantPage()));
+                                builder: (context) =>
+                                    const EnterpriseMemberPage()));
+                      } else if (counter == 2) {
+                        userLogout();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
                       }
                     },
                     isSelected: currentSelectedIndex == counter,
@@ -117,5 +133,10 @@ class _EnterpriseCollapsingNavigationDrawerState
         ),
       ),
     );
+  }
+
+  void userLogout() async {
+    final SharedPreferences preferences = await prefs;
+    await logout(preferences.getString('token')!);
   }
 }

@@ -116,7 +116,11 @@ class _AdminEditFarmerPageState extends State<AdminEditFarmerPage> {
         child: Stack(
           children: [
             editFarmerContent(),
-            AdminCollapsingNavigationDrawer(name: username!, menuIndex: 2),
+            AdminCollapsingNavigationDrawer(
+              name: username!,
+              menuIndex: 2,
+              maxWidth: MediaQuery.of(context).size.width * 0.55,
+            ),
           ],
         ),
       ),
